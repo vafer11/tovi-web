@@ -2,11 +2,10 @@
   (:require
    [reagent.dom :as rdom]
    [re-frame.core :as re-frame]
-   [tovi-web.events :as events]
+   [tovi-web.account.events :as events]
    [tovi-web.routes :as routes]
-   [tovi-web.views :as views]
-   [tovi-web.config :as config]
-   ))
+   [tovi-web.account.views.signup :as views]
+   [tovi-web.config :as config]))
 
 
 (defn dev-setup []

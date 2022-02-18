@@ -1,11 +1,9 @@
-(ns tovi-web.views
+(ns tovi-web.account.views.signup
   (:require
    [re-frame.core :as re-frame]
-   [tovi-web.events :as events]
+   [tovi-web.account.events :as events]
    [tovi-web.routes :as routes]
-   [tovi-web.subs :as subs]
-   ))
-
+   [tovi-web.account.subs :as subs]))
 
 ;; home
 
@@ -17,8 +15,7 @@
 
      [:div
       [:a {:on-click #(re-frame/dispatch [::events/navigate :about])}
-       "go to About Page"]]
-     ]))
+       "go to About Page"]]]))
 
 (defmethod routes/panels :home-panel [] [home-panel])
 
