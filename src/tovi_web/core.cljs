@@ -4,7 +4,7 @@
    [re-frame.core :as re-frame]
    [tovi-web.account.events :as events]
    [tovi-web.routes :as routes]
-   [tovi-web.account.views.signup :as views]
+   [tovi-web.views :as views]
    [tovi-web.config :as config]))
 
 

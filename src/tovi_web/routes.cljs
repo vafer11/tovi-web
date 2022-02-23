@@ -5,13 +5,13 @@
    [re-frame.core :as re-frame]
    [tovi-web.account.events :as events]))
 
-(defmulti panels identity)
-(defmethod panels :default [] [:div "No panel found for this route."])
-
 (def routes
   (atom
-    ["/" {""      :home
-          "about" :about}]))
+    ["/" {"" :home
+          "about" :about
+          "signup" :signup
+          "signin" :signin
+          "reset-pw" :reset-pw}]))
 
 (defn parse
   [url]
