@@ -3,6 +3,17 @@
    [re-frame.core :as re-frame]
    [tovi-web.db :as db]))
 
+(re-frame/reg-event-db
+ ::submit-signup-form
+ (fn [db _]
+   (.log js/console "submit-signup-form")
+   db))
+
+(re-frame/reg-event-db
+ ::submit-signin-form
+ (fn [db _]
+   (.log js/console "submit-signin-form")
+   db))
 
 (re-frame/reg-event-db
  ::initialize-db

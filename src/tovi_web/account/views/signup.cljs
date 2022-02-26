@@ -2,15 +2,28 @@
   (:require
    ["@mui/material/Container" :default Container]
    ["@mui/material/Typography" :default Typography]
-   ["@mui/material/TextField" :default TextField]
-   ;[re-frame.core :as re-frame]
-   ;[tovi-web.account.events :as events]
-   ;[tovi-web.account.subs :as subs]
-   ))
+   [tovi-web.components.inputs :refer [text-field button]]
+   [re-frame.core :refer [dispatch]]))
 
 (defn signup []
   (let [path [:forms :signup]]
     [:> Container {:component :main :maxWidth :xs :style {:margin-top 20}}
      [:> Typography {:component :h1 :variant :h5} "Sign Up"]
-     [:form {:noValidate true}
-      [:> TextField {:id :id :label "Label" :variant :outlined}]]]))
+     [:form {:noValidate true :autoComplete "off"}
+      [text-field path {:id :first-name
+                        :label "First name"
+                        :required true
+                        :autoFocus true}]
+      [text-field path {:id :last-name
+                        :label "Last name"
+                        :required true}]
+      [text-field path {:id :email
+                        :label "Email"
+                        :required true}]
+      [text-field path {:id :password
+                        :label "Password"
+                        :required true}]
+      [text-field path {:id :confirm-password
+                        :label "Confirm password"
+                        :required true}]
+      [button "Submit" {:onClick #(dispatch [:tovi-web.account.events/submit-signup-form])}]]]))
