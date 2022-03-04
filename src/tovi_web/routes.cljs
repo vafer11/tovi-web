@@ -11,7 +11,8 @@
           "about" :about
           "signup" :signup
           "signin" :signin
-          "reset-pw" :reset-pw}]))
+          "reset-pw" :reset-pw
+          "recipes" :recipes}]))
 
 (defn parse
   [url]

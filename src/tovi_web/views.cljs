@@ -5,6 +5,7 @@
    [tovi-web.theme :refer [tovi-theme]]
    [tovi-web.account.views.signup :refer [signup]]
    [tovi-web.account.views.signin :refer [signin]]
+   [tovi-web.recipes.views.recipes :refer [recipes]]
    [re-frame.core :as re-frame]
    [tovi-web.account.events :as events]
    [tovi-web.account.subs :as subs]))
@@ -41,6 +42,7 @@
 
 (defmethod panels :signup-panel [] [signup])
 (defmethod panels :signin-panel [] [signin])
+(defmethod panels :recipes-panel [] [recipes])
 
 ;; main
 
