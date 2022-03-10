@@ -12,7 +12,10 @@
           "signup" :signup
           "signin" :signin
           "reset-pw" :reset-pw
-          "recipes" :recipes}]))
+          "recipes" :recipes
+          "create-recipe" :create-recipe
+          "edit-recipe" :edit-recipe
+          "calculate-recipe" :calculate-recipe}]))
 
 (defn parse
   [url]
