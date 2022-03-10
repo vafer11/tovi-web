@@ -18,7 +18,7 @@
                        :subheader description}]
    [:> mui/CardMedia {:component :img
                       :height 195
-                      :image image
+                      :image (:src image)
                       :alt name
                       :onClick #(dispatch [::events/show-recipe-dialog :view id])}]
    [:> mui/CardContent

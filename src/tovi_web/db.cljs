@@ -8,16 +8,16 @@
                     :errors {:first-name "Required" :last-name "Required" :email "Required" :password "Required" :confirm-password "Required"}}
            :recipe {:values {:name "Recipe name"
                              :description "Recipe desc"
-                             :image "imageUrl"
+                             :image nil
                              :steps "Steps 1 ... Steps 2 ..."
-                             :ingredients {"1" {:id "1"
-                                                :label "Harina"
-                                                :quantity 1000
-                                                :unit "gr"}
-                                           "2" {:id "2"
-                                                :label "Agua"
-                                                :quantity 590
-                                                :unit "ml"}}}}}
+                             :ingredients {1 {:id 1
+                                              :label "Harina"
+                                              :quantity 1000
+                                              :unit "gr"}
+                                           2 {:id 2
+                                              :label "Agua"
+                                              :quantity 590
+                                              :unit "ml"}}}}}
    :ingredients {1 {:value 1 :unit "gr" :label "Harina"}
                  2 {:value 2 :unit "ml" :label "Agua"}
                  3 {:value 3 :unit "gr" :label "Sal"}
@@ -31,24 +31,36 @@
    :recipes {1 {:id 1
                :name "Pan Frances"
                :description "Destripción de receta de Pan Frances"
-               :image "/images/paella.jpg"
+               :image {:name "Imagen Pan Frances"
+                       :attachment nil
+                       :src "/images/paella.jpg"}
                :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                :ingredients {1 {:id 1
+                                :label "Harina"
                                 :name "Harina"
-                                :quantity "1000 kg"}
+                                :quantity "1000"
+                                :unit "kg"}
                              2 {:id 2
+                                :label "Agua"
                                 :name "Agua"
-                                :quantity "500 ml"}
+                                :quantity 500
+                                :unit "ml"}
                              3 {:id 3
+                                :label "Sal"
                                 :name "Sal"
-                                :quantity "20 gr"}
+                                :quantity 20
+                                :unit "gr"}
                              4 {:id 4
+                                :label "Levadura"
                                 :name "Levadura"
-                                :quantity "4 gr"}}}
+                                :quantity 4
+                                :unit "gr"}}}
              2 {:id 2
                 :name "Pan de Viena"
                 :description "Destripción de receta de Pan de Viena"
-                :image "/images/paella.jpg"
+                :image {:name "Imagen Pan Frances"
+                        :attachment nil
+                        :src "/images/paella.jpg"}
                 :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                 :ingredients {1 {:id 1
                                  :name "Harina"
@@ -65,7 +77,9 @@
              3 {:id 3
                 :name "Bizcochos"
                 :description "Destripción de receta de Bizcocho"
-                :image "/images/paella.jpg"
+                :image {:name "Imagen Pan Frances"
+                        :attachment nil
+                        :src "/images/paella.jpg"}
                 :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                 :ingredients {1 {:id 1
                                  :name "Harina"
@@ -82,7 +96,9 @@
              4 {:id 4
                 :name "Pan de masa madre"
                 :description "Destripción de receta de Bizcocho bla bla bla"
-                :image "/images/paella.jpg"
+                :image {:name "Imagen Pan Frances"
+                        :attachment nil
+                        :src "/images/paella.jpg"}
                 :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                 :ingredients {1 {:id 1
                                  :name "Harina"
