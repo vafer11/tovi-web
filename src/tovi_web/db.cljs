@@ -63,15 +63,19 @@
                         :src "/images/paella.jpg"}
                 :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                 :ingredients {1 {:id 1
+                                 :label "Harina"
                                  :name "Harina"
                                  :quantity "1000 kg"}
                               2 {:id 2
+                                 :label "Agua"
                                  :name "Agua"
                                  :quantity "500 ml"}
                               3 {:id 3
+                                 :label "Sal"
                                  :name "Sal"
                                  :quantity "20 gr"}
                               4 {:id 4
+                                 :label "Levadura"
                                  :name "Levadura"
                                  :quantity "4 gr"}}}
              3 {:id 3
@@ -82,15 +86,19 @@
                         :src "/images/paella.jpg"}
                 :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                 :ingredients {1 {:id 1
+                                 :label "Harina"
                                  :name "Harina"
                                  :quantity "1000 kg"}
                               2 {:id 2
+                                 :label "Agua"
                                  :name "Agua"
                                  :quantity "500 ml"}
                               3 {:id 3
+                                 :label "Sal"
                                  :name "Sal"
                                  :quantity "20 gr"}
                               4 {:id 4
+                                 :label "Levadura"
                                  :name "Levadura"
                                  :quantity "4 gr"}}}
              4 {:id 4
@@ -101,14 +109,18 @@
                         :src "/images/paella.jpg"}
                 :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                 :ingredients {1 {:id 1
+                                 :label "Harina"
                                  :name "Harina"
                                  :quantity "2500 kg"}
                               2 {:id 2
+                                 :label "Agua"
                                  :name "Agua"
                                  :quantity "545 ml"}
                               3 {:id 3
+                                 :label "Sal"
                                  :name "Sal"
                                  :quantity "27 gr"}
                               4 {:id 4
+                                 :label "Levadura"
                                  :name "Levadura"
                                  :quantity "3.6 gr"}}}}})

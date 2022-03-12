@@ -17,3 +17,18 @@
    (subscribe [::path-db-value path]))
  (fn [error-msg]
    (not (nil? error-msg))))
+
+
+(reg-event-db
+ ::upload-image
+ (fn [db [_ path files]]
+   (if-let [file (first files)]
+     (assoc-in db path {:name (.-name file)
+                        :attachment file
+                        :src (.createObjectURL js/URL file)})
+     db)))
+
+(reg-sub
+ ::image
+ (fn [db _]
+   (-> db :forms :recipe :values :image)))

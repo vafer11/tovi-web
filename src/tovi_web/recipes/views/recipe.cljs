@@ -1,26 +1,12 @@
-(ns tovi-web.recipes.views.create-recipe
+(ns tovi-web.recipes.views.recipe
   (:require ["@mui/material" :as mui]
             ["@mui/icons-material/Delete" :default DeleteIcon]
             ["@mui/icons-material/AddBox" :default AddBoxIcon]
-            [tovi-web.components.inputs :refer [text-field autocomplete button]]
+            [tovi-web.components.inputs :refer [text-field autocomplete button upload-image]]
             [tovi-web.recipes.events :as events]
             [tovi-web.recipes.subs :as subs]
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :refer [as-element]]))
-
-(defn- upload-image []
-  (let [image-url (subscribe [::subs/recipe-image-url])]
-    (fn []
-      [:div
-       [:img {:src @image-url :width "100%"}]
-       [:input {:type :file
-                :id :select-image
-                :accept "image/*"
-                :style {:display :none}
-                :onChange #(let [files (.from js/Array (.. % -target -files))]
-                             (dispatch [::events/upload-recipe-image files]))}]
-       [:label {:htmlFor :select-image}
-        [:> mui/Button {:component :span} "Upload Image"]]])))
 
 (defn- editable-ingredients-table []
   (let [ingredients (subscribe [::subs/ingredients])
@@ -56,25 +42,41 @@
                                  :style {:marginLeft :auto}}
                                 [:> DeleteIcon]]]])]]]])))
 
-(defn recipe []
+(defn recipe [title action]
   (let [db (subscribe [::subs/get-db])]
     [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30
                                                               :margin-bottom 50}}
-     (-> @db :forms :recipe :values)
-     [:> mui/Typography {:component :h2 :variant :h4} "Create new recipe"]
+     (-> @db :forms :recipe)
+
+     [:> mui/Typography {:component :h2 :variant :h4} title]
      [:form {:noValidate true :autoComplete "off"}
-      [text-field
-       [:forms :recipe :values :name]
-       [:forms :recipe :errors :name]
-       {:id :name :label "Recipe" :required true :autoFocus true}]
-      [text-field
-       [:forms :recipe :values :description]
-       [:forms :recipe :errors :description]
-       {:id :description :label "Description" :required true}]
-      [text-field
-       [:forms :recipe :values :steps]
-       [:forms :recipe :errors :steps]
-       {:id :steps :label "Steps" :multiline true :rows 5 :required true}]
-      [upload-image [:forms :recipe :values :image]]
-      [editable-ingredients-table]
-      [button "Create recipe" {:onClick #(dispatch [::events/create-recipe])}]]]))
+      [:> mui/Grid {:container true :spacing 1}
+       [:> mui/Grid {:item true :xs 12}
+        
+        [text-field
+         [:forms :recipe :values :name]
+         [:forms :recipe :errors :name]
+         {:id :name :label "Recipe" :required true :autoFocus true}]]
+       
+       [:> mui/Grid {:item true :xs 12}
+        [text-field
+         [:forms :recipe :values :description]
+         [:forms :recipe :errors :description]
+         {:id :description :label "Description" :required true}]]
+       
+       [:> mui/Grid {:item true :xs 12}
+        [text-field
+         [:forms :recipe :values :steps]
+         [:forms :recipe :errors :steps]
+         {:id :steps :label "Steps" :multiline true :rows 5 :required true}]]
+    
+       [:> mui/Grid {:item true :xs 12}
+        [upload-image [:forms :recipe :values :image]]]
+       
+       [:> mui/Grid {:item true :xs 12}
+        [editable-ingredients-table]]
+       [:> mui/Grid {:item true :xs 12}
+        [button title {:style {:margin-top 15}
+                       :onClick #(case action
+                                  :create (dispatch [::events/create-recipe])
+                                  :edit (dispatch [::events/edit-recipe]))}]]]]]))

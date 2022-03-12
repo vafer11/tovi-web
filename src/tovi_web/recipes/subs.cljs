@@ -35,9 +35,3 @@
  ::ingredients
  (fn [db _]
    (-> db :ingredients vals vec)))
-
-(reg-sub
- ::recipe-image-url
- (fn [db _]
-   (-> db :forms :recipe :values :image :src)))
-

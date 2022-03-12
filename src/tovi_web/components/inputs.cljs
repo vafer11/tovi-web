@@ -40,6 +40,23 @@
                                             (set! (.-label params) label)
                                             (create-element mui/TextField params))}])))
 
+(defn upload-image [path]
+  (let [image (subscribe [::events/image])]
+    (fn []
+      [:<>
+       [:img {:src (:src @image)
+              :alt (:name @image)
+              :width "100%"}]
+       [:input {:type :file
+                :id :select-image
+                :accept "image/*"
+                :style {:display :none}
+                :onChange #(let [files (.from js/Array (.. % -target -files))]
+                             (dispatch [::events/upload-image path files]))}]
+       [:label {:htmlFor :select-image}
+        [:> mui/Button {:component :span} "Upload Image"]]])))
+
+
 (defn button [name props]
   [:> mui/Button (merge {:variant :contained
                          :color :primary

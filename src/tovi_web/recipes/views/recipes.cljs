@@ -4,7 +4,6 @@
             ["@mui/icons-material/Calculate" :default CalculateIcon]
             ["@mui/icons-material/Delete" :default DeleteIcon]
             [tovi-web.recipes.views.view-recipe :refer [view-recipe-dialog]]
-            [tovi-web.recipes.views.edit-recipe :refer [edit-recipe-dialog]]
             [tovi-web.recipes.views.delete-recipe :refer [delete-recipe-dialog]]
             [tovi-web.recipes.events :as events]
             [tovi-web.recipes.subs :as subs]
@@ -25,7 +24,7 @@
     [:> mui/Typography {:variant :body2} steps]]
    [:> mui/CardActions {:disableSpacing true}
     [:> mui/IconButton {:aria-label "Edit recipe"
-                        :onClick #(dispatch [::events/edit-recipe id])}
+                        :onClick #(dispatch [::events/show-edit-recipe id])}
      [:> ModeEditIcon]]
     [:> mui/IconButton {:aria-label "Calculate recipe"
                         :onClick #(dispatch [::events/show-recipe-dialog :calculate id])}
@@ -42,9 +41,12 @@
       [:<>
        [view-recipe-dialog]
        [delete-recipe-dialog]
-       [edit-recipe-dialog]
+       (-> @db :recipes)
        [:> mui/Container {:maxWidth :xl :style {:margin-top 20}}
-        @db
+        [:> mui/Button  
+         {:style {:margin-top 15}
+          :onClick #(dispatch [:tovi-web.account.events/navigate :create-recipe])} 
+         "Add recipe"]
         [:> mui/Grid {:container true :spacing 4}
          (for [[k v] @recipes]
            ^{:key (str k "-" v)}

@@ -14,19 +14,19 @@
                         :maxWidth :md}
          [:> mui/DialogTitle [:> mui/Typography name] [:> mui/Typography description]]
          [:> mui/DialogContent
-          [:img {:src image}]
+          [:img {:src (:src image)}]
           [:> mui/Typography steps]
           [:> mui/TableContainer {:component mui/Paper}
-           [:> mui/Table {:sx {:minWidth 650} :aria-label "view-recipe-ingredients"}
+           [:> mui/Table {:sx {:minWidth 310} :aria-label "view-recipe-ingredients"}
             [:> mui/TableHead
              [:> mui/TableRow
               [:> mui/TableCell "Ingredients"]
               [:> mui/TableCell "Quantity"]]]
             [:> mui/TableBody
-             (for [[k {:keys [id name quantity]}] ingredients]
+             (for [[_ {:keys [id label quantity unit]}] ingredients]
                ^{:key id}
                [:> mui/TableRow
-                [:> mui/TableCell name]
-                [:> mui/TableCell quantity]])]]]]
+                [:> mui/TableCell label]
+                [:> mui/TableCell (str unit " " quantity)]])]]]]
          [:> mui/DialogActions
           [:> mui/Button {:onClick #(dispatch [::events/hide-recipe-dialog])} "Ok"]]]))))

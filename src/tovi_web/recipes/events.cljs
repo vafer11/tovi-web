@@ -12,11 +12,20 @@
    (dissoc db :active-dialog)))
 
 (reg-event-fx
- ::edit-recipe
+ ::show-edit-recipe
  (fn [{:keys [db]} [_ id]]
    (let [recipe (get-in db [:recipes id])]
      {:db (assoc-in db [:forms :recipe :values] recipe)
       :fx [[:dispatch [:tovi-web.account.events/navigate :edit-recipe]]]})))
+
+(reg-event-fx
+ ::edit-recipe
+ (fn [{:keys [db]} _]
+   (let [recipe (-> db :forms :recipe :values)
+         recipe-key (:id recipe)]
+     (.log js/console recipe)
+     {:db (assoc-in db [:recipes recipe-key] recipe)
+      :fx [[:dispatch [:tovi-web.account.events/navigate :recipes]]]})))
 
 
 (reg-event-db
@@ -50,18 +59,11 @@
                                                                  :quantity ""
                                                                  :unit ""}))))
 
-(reg-event-db
- ::upload-recipe-image
- (fn [db [_ files]]
-   (if-let [file (first files)]
-     (assoc-in db [:forms :recipe :values :image] {:name (.-name file)
-                                                   :attachment file
-                                                   :src (.createObjectURL js/URL file)})
-     db)))
-
 (reg-event-fx
  ::create-recipe
  (fn [{:keys [db]} _]
-   {:db db
-    :fx [[:dispatch [::hide-recipe-dialog :delete]]]}))
+   (let [recipe (-> db :forms :recipe :values)
+         next-key (->> db :recipes keys (reduce max 0) inc)]
+     {:db (assoc-in db [:recipes next-key] (assoc recipe :id next-key))
+      :fx [[:dispatch [:tovi-web.account.events/navigate :recipes]]]})))
 
