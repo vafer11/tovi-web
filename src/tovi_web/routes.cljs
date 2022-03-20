@@ -2,8 +2,7 @@
   (:require
    [bidi.bidi :as bidi]
    [pushy.core :as pushy]
-   [re-frame.core :as re-frame]
-   [tovi-web.account.events :as events]))
+   [re-frame.core :as re-frame]))
 
 (def routes
   (atom
@@ -28,7 +27,7 @@
 (defn dispatch
   [route]
   (let [panel (keyword (str (name (:handler route)) "-panel"))]
-    (re-frame/dispatch [::events/set-active-panel panel])))
+    (re-frame/dispatch [:set-active-panel panel])))
 
 (defonce history
   (pushy/pushy dispatch parse))
@@ -41,7 +40,3 @@
   []
   (pushy/start! history))
 
-(re-frame/reg-fx
-  :navigate
-  (fn [handler]
-    (navigate! handler)))

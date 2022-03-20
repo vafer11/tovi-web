@@ -7,9 +7,9 @@
    [tovi-web.account.views.signin :refer [signin]]
    [tovi-web.recipes.views.recipes :refer [recipes]]
    [tovi-web.recipes.views.recipe :refer [recipe]]
-   [re-frame.core :as re-frame]
-   [tovi-web.account.events :as events]
-   [tovi-web.account.subs :as subs]))
+   [tovi-web.nav.events :as events]
+   [tovi-web.nav.subs :as subs]
+   [re-frame.core :as re-frame]))
 
 
 (defmulti panels identity)
@@ -18,13 +18,14 @@
 ;; home
 
 (defn home-panel []
-  (let [name (re-frame/subscribe [::subs/name])]
+  (let [name "name"]
     [:div
      [:h1
-      (str "Hello from " @name ". This is the Home Page.")]
+      (str "Hello from... " name ". This is the Home Page.")
+      ]
 
      [:div
-      [:a {:on-click #(re-frame/dispatch [::events/navigate :about])}
+      [:a {:on-click #(re-frame/dispatch [:navigate :about])}
        "go to About Page"]]]))
 
 (defmethod panels :home-panel [] [home-panel])
@@ -36,7 +37,7 @@
    [:h1 "This is the About Page."]
 
    [:div
-    [:a {:on-click #(re-frame/dispatch [::events/navigate :home])}
+    [:a {:on-click #(re-frame/dispatch [:navigate :home])}
      "go to Home Page"]]])
 
 (defmethod panels :about-panel [] [about-panel])
@@ -51,7 +52,7 @@
 ;; main
 
 (defn main-panel []
-  (let [active-panel (re-frame/subscribe [::subs/active-panel])]
+  (let [active-panel (re-frame/subscribe [:active-panel])]
     [:> ThemeProvider {:theme (tovi-theme)}
      [:<>
       [:> CssBaseline]

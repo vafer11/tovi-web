@@ -28,12 +28,9 @@
                             :inputValue @inputValue
                             :onInputChange (fn [_ e]
                                              (dispatch [::events/set-path-db-value label-path e]))
-                            :options @options
+                            :options options
                             :onChange (fn [_ e]
-                                        (let [new-value (-> @value
-                                                            (assoc :id (str (.-value e)))
-                                                            (assoc :unit (str (.-unit e))))]
-                                          (dispatch [::events/set-path-db-value field-path new-value])))
+                                        (dispatch [::events/set-path-db-value field-path (assoc @value :id (str (.-value e)))]))
                             :isOptionEqualToValue (fn [_ _] true)
                             :render-input (fn [^js params]
                                             (set! (.-variant params) variant)

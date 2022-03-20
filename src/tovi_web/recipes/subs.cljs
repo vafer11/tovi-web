@@ -2,36 +2,49 @@
   (:require [re-frame.core :refer [reg-sub subscribe]]))
 
 (reg-sub
- ::get-db
- (fn [db _]
-   db))
-
-(reg-sub
  ::recipes
  (fn [db]
    (:recipes db)))
 
+; Used by view-recipe, calculate-recipe, and delete-recipe dialog.
 (reg-sub
- ::dialog-recipe-id
+ ::active-dialog-recipe-id
  (fn [db [_ dialog]]
-   (when (= dialog (-> db :active-dialog :name))
-     (-> db :active-dialog :recipe-id))))
+   (get-in db [:active-dialog dialog :active-recipe-id])))
 
+; Used by view-recipe and calculate recipe dialog.
 (reg-sub
- ::dialog-recipe
+ ::active-dialog-recipe
  (fn [[_ dialog]]
-   [(subscribe [::dialog-recipe-id dialog])
+   [(subscribe [::active-dialog-recipe-id dialog])
     (subscribe [::recipes])])
  (fn [[id recipes]]
    (recipes id)))
 
-;; Used by create-recipe
+
 (reg-sub
- ::recipe-ingredients
+ ::get-db
  (fn [db _]
-   (-> db :forms :recipe :values :ingredients)))
+   db))
+
+
+;; Used by recipe component 
+(reg-sub
+ ::form-recipe-ingredients
+ (fn [db _]
+   (-> db :forms :recipe :values :ingredients vec)))
 
 (reg-sub
  ::ingredients
  (fn [db _]
    (-> db :ingredients vals vec)))
+
+;; Calculate recipe dialog subscriptions
+(reg-sub
+ ::recipe-total-dough-weight
+ (fn [db [_ id]]
+   (let [ingredients (get-in db [:recipes id :ingredients])]
+     (reduce-kv
+      (fn [acc _ {:keys [quantity]}] (+ acc quantity))
+      0
+      ingredients))))

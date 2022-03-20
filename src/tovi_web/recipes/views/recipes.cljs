@@ -4,6 +4,7 @@
             ["@mui/icons-material/Calculate" :default CalculateIcon]
             ["@mui/icons-material/Delete" :default DeleteIcon]
             [tovi-web.recipes.views.view-recipe :refer [view-recipe-dialog]]
+            [tovi-web.recipes.views.calculate-recipe :refer [calculate-recipe-dialog]]
             [tovi-web.recipes.views.delete-recipe :refer [delete-recipe-dialog]]
             [tovi-web.recipes.events :as events]
             [tovi-web.recipes.subs :as subs]
@@ -19,7 +20,7 @@
                       :height 195
                       :image (:src image)
                       :alt name
-                      :onClick #(dispatch [::events/show-recipe-dialog :view id])}]
+                      :onClick #(dispatch [:show-dialog :view-recipe id])}]
    [:> mui/CardContent
     [:> mui/Typography {:variant :body2} steps]]
    [:> mui/CardActions {:disableSpacing true}
@@ -27,10 +28,10 @@
                         :onClick #(dispatch [::events/show-edit-recipe id])}
      [:> ModeEditIcon]]
     [:> mui/IconButton {:aria-label "Calculate recipe"
-                        :onClick #(dispatch [::events/show-recipe-dialog :calculate id])}
+                        :onClick #(dispatch [:show-dialog :calculate-recipe id])}
      [:> CalculateIcon]]
     [:> mui/IconButton {:aria-label "Delete recipe"
-                        :onClick #(dispatch [::events/show-recipe-dialog :delete id])
+                        :onClick #(dispatch [:show-dialog :delete-recipe id])
                         :style {:marginLeft :auto}}
      [:> DeleteIcon]]]])
 
@@ -40,12 +41,13 @@
     (fn []
       [:<>
        [view-recipe-dialog]
+       [calculate-recipe-dialog]
        [delete-recipe-dialog]
-       (-> @db :recipes)
+       (-> @db :active-dialog)
        [:> mui/Container {:maxWidth :xl :style {:margin-top 20}}
-        [:> mui/Button  
+        [:> mui/Button
          {:style {:margin-top 15}
-          :onClick #(dispatch [:tovi-web.account.events/navigate :create-recipe])} 
+          :onClick #(dispatch [:navigate :create-recipe])}
          "Add recipe"]
         [:> mui/Grid {:container true :spacing 4}
          (for [[k v] @recipes]

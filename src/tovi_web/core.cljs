@@ -2,7 +2,7 @@
   (:require
    [reagent.dom :as rdom]
    [re-frame.core :as re-frame]
-   [tovi-web.account.events :as events]
+   [tovi-web.db :as events]
    [tovi-web.routes :as routes]
    [tovi-web.views :as views]
    [tovi-web.config :as config]))
