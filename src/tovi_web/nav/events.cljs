@@ -3,13 +3,13 @@
    [tovi-web.routes :as routes]
    [re-frame.core :refer [reg-event-fx reg-fx reg-event-db]]))
 
-;; :navigate Effect handler
+;; :navigate effect handler
 (reg-fx
  :navigate-to
  (fn [handler]
    (routes/navigate! handler)))
 
-;; :navigate Event handler
+;; :navigate event handler
 (reg-event-fx
  :navigate
  (fn [_ [_ handler]]

@@ -2,8 +2,11 @@
   (:require [re-frame.core :refer [reg-event-db]]))
 
 
-; All Inputs values are stored following this structure {:forms :form-name {:input-name {:value input-value
-;                                                                                        :error input-error}}}
+; All Inputs values are stored following this structure {:forms :form-name {:input-name1 {:value input-value
+;                                                                                         :error input-error}
+;                                                                           :input-name2 {:value input-value
+;                                                                                         :error input-error}
+;}}
 (def default-db
   {:name "re-frame"
    :forms {:signin {:email {:value "" :error nil}
@@ -15,7 +18,7 @@
                     :confirm-password {:value "" :error nil}}
            :recipe {:name {:value "Recipe name" :error nil}
                     :description {:value "Recipe name" :error nil}
-                    :image {:value nil :error nil}
+                    :image nil
                     :steps {:value "Steps 1 ... Steps 2 ..." :error nil}
                     :ingredients {1 {:id {:value 1 :error nil}
                                      :label {:value "Harina" :error nil}
@@ -40,7 +43,7 @@
    :recipes {1 {:id 1
                 :name "Pan Frances"
                 :description "Destripción de receta de Pan Frances"
-                :image {:name "Imagen Pan Frances" :attachment nil :src ""}
+                :image {:name "Pan Frances" :attachment nil :src ""}
                 :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                 :ingredients {1 {:id 1 :label "Harina" :percentage 100 :quantity 1000 :unit "gr"}
                               2 {:id 2 :label "Agua" :percentage 60 :quantity 500 :unit "gr"}
@@ -49,7 +52,7 @@
              2 {:id 2
                 :name "Pan de Viena"
                 :description "Destripción de receta de Pan de Viena"
-                :image {:name "Imagen Pan Frances" :attachment nil :src ""}
+                :image {:name "Pan de Viena" :attachment nil :src ""}
                 :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                 :ingredients {1 {:id 1 :label "Harina" :percentage 100 :quantity 1000 :unit "gr"}
                               2 {:id 2 :label "Agua" :percentage 60 :quantity 600 :unit "gr"}
@@ -57,8 +60,8 @@
                               4 {:id 4 :label "Levadura" :percentage 4 :quantity 40 :unit "gr"}}}
              3 {:id 3
                 :name "Bizcochos"
-                :description "Destripción de receta de Bizcocho"
-                :image {:name "Imagen Pan Frances" :attachment nil :src ""}
+                :description "Destripción de receta de Bizcochos"
+                :image {:name "Bizcochos" :attachment nil :src ""}
                 :steps "Integrar bien todos los ingredients despues bla bla bla bla bla bla bla bla bla"
                 :ingredients {1 {:id 1 :label "Harina" :percentage 100 :quantity 1000 :unit "gr"}
                               2 {:id 2 :label "Agua" :percentage 59 :quantity 590 :unit "gr"}

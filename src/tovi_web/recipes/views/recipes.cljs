@@ -11,7 +11,7 @@
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :refer [as-element]]))
 
-(defn- recipe [{:keys [id name description image steps]}]
+(defn- recipe-card [{:keys [id name description image steps]}]
   [:> mui/Card {:sx {:maxWidth 425}}
    [:> mui/CardHeader {:avatar (as-element [:> mui/Avatar {:sx {:bgcolor "red"}} "AF"])
                        :title name
@@ -36,22 +36,19 @@
      [:> DeleteIcon]]]])
 
 (defn recipes []
-  (let [recipes (subscribe [::subs/recipes])
-        db (subscribe [::subs/get-db])]
-    (fn []
-      [:<>
-       [view-recipe-dialog]
-       [calculate-recipe-dialog]
-       [delete-recipe-dialog]
-       (-> @db :active-dialog)
-       [:> mui/Container {:maxWidth :xl :style {:margin-top 20}}
-        [:> mui/Button
-         {:style {:margin-top 15}
-          :onClick #(dispatch [:navigate :create-recipe])}
-         "Add recipe"]
-        [:> mui/Grid {:container true :spacing 4}
-         (for [[k v] @recipes]
-           ^{:key (str k "-" v)}
-           [:> mui/Grid {:item true :xs 12 :md 6 :lg 4 :xl 3 :align :center}
-            [recipe v]])]]])))
+  (let [recipes (subscribe [::subs/recipes])]
+    [:<>
+     [view-recipe-dialog]
+     [calculate-recipe-dialog]
+     [delete-recipe-dialog]
+     [:> mui/Container {:maxWidth :xl :style {:margin-top 20}}
+      [:> mui/Button
+       {:style {:margin-top 15}
+        :onClick #(dispatch [:navigate :create-recipe])}
+       "Add recipe"]
+      [:> mui/Grid {:container true :spacing 4}
+       (for [[k v] @recipes]
+         ^{:key (str k "-" v)}
+         [:> mui/Grid {:item true :xs 12 :md 6 :lg 4 :xl 3 :align :center}
+          [recipe-card v]])]]]))
 

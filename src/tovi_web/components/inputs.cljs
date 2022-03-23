@@ -20,21 +20,16 @@
 
 
 (defn autocomplete [path-id path-label {:keys [id label variant]} options]
-  (let [default-value @(subscribe [:input-value path-label])
-        onInputChange-fn (fn [_ e]
-                           (dispatch [:set-input-value path-label e]))
-        onChange-fn (fn [_ e]
-                      (when e
-                        (dispatch [:set-input-value path-id (.-value e)])))]
+  (let [default-value @(subscribe [:input-value path-label])]
     (fn []
       (let [input-value @(subscribe [:input-value path-label])]
         [:> mui/Autocomplete {:disablePortal true
                               :id id
                               :defaultValue default-value
                               :inputValue input-value
-                              :onInputChange onInputChange-fn
+                              :onInputChange (fn [_ e] (dispatch [:set-input-value path-label e]))
                               :options options
-                              :onChange onChange-fn
+                              :onChange (fn [_ e] (when e (dispatch [:set-input-value path-id (.-value e)])))
                               :isOptionEqualToValue (fn [_ _] true)
                               :render-input (fn [^js params]
                                               (set! (.-variant params) variant)
@@ -46,7 +41,6 @@
   (let [image (subscribe [:path-db-value path])]
     [:<>
      [:img {:src (:src @image)
-            :alt (:name @image)
             :width "100%"}]
      [:input {:type :file
               :id :select-image

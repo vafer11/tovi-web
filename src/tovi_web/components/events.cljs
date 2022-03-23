@@ -30,24 +30,6 @@
 
 
 (reg-event-db
- :set-path-db-value
- (fn [db [_ path value]]
-   (assoc-in db path value)))
-
-(reg-sub
- :path-db-value
- (fn [db [_ path]]
-   (get-in db path)))
-
-(reg-sub
- :field-error?-borrar
- (fn [[_ path]]
-   (subscribe [:path-db-value path]))
- (fn [error-msg]
-   (not (nil? error-msg))))
-
-
-(reg-event-db
  :upload-image
  (fn [db [_ path files]]
    (if-let [file (first files)]
@@ -56,7 +38,14 @@
                         :src (.createObjectURL js/URL file)})
      db)))
 
+;; Generic event handler to update a path value
+(reg-event-db
+ :set-path-db-value
+ (fn [db [_ path value]]
+   (assoc-in db path value)))
+
+;; Generic event handler to get a path value
 (reg-sub
- :image
- (fn [db _]
-   (-> db :forms :recipe :values :image)))
+ :path-db-value
+ (fn [db [_ path]]
+   (get-in db path)))

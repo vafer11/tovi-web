@@ -57,37 +57,34 @@
                               [:> DeleteIcon]]]])]]]]))
 
 (defn recipe [title action]
-  (let [db (subscribe [::subs/get-db])]
-    [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30 :margin-bottom 50}}
-     (-> @db :forms :recipe :ingredients)
+  [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30 :margin-bottom 50}}
+   [:> mui/Typography {:component :h2 :variant :h4} title]
+   [:form {:noValidate true :autoComplete "off"}
+    [:> mui/Grid {:container true :spacing 1}
+     [:> mui/Grid {:item true :xs 12}
 
-     [:> mui/Typography {:component :h2 :variant :h4} title]
-     [:form {:noValidate true :autoComplete "off"}
-      [:> mui/Grid {:container true :spacing 1}
-       [:> mui/Grid {:item true :xs 12}
-        
-        [text-field
-         [:forms :recipe :name]
-         {:id :name :label "Recipe" :required true :autoFocus true}]]
-       
-       [:> mui/Grid {:item true :xs 12}
-        [text-field
-         [:forms :recipe :description]
-         {:id :description :label "Description" :required true}]]
-       
-       [:> mui/Grid {:item true :xs 12}
-        [text-field
-         [:forms :recipe :steps]
-         {:id :steps :label "Steps" :multiline true :rows 5 :required true}]]
-    
-       [:> mui/Grid {:item true :xs 12}
-        [upload-image [:forms :recipe :image]]]
-       
-       [:> mui/Grid {:item true :xs 12}
-        [editable-ingredients-table]]
-       
-       [:> mui/Grid {:item true :xs 12}
-        [button title {:style {:margin-top 15}
-                       :onClick #(case action
-                                  :create (dispatch [::events/create-recipe])
-                                  :edit (dispatch [::events/edit-recipe]))}]]]]]))
+      [text-field
+       [:forms :recipe :name]
+       {:id :name :label "Recipe" :required true :autoFocus true}]]
+
+     [:> mui/Grid {:item true :xs 12}
+      [text-field
+       [:forms :recipe :description]
+       {:id :description :label "Description" :required true}]]
+
+     [:> mui/Grid {:item true :xs 12}
+      [text-field
+       [:forms :recipe :steps]
+       {:id :steps :label "Steps" :multiline true :rows 5 :required true}]]
+
+     [:> mui/Grid {:item true :xs 12}
+      [upload-image [:forms :recipe :image]]]
+
+     [:> mui/Grid {:item true :xs 12}
+      [editable-ingredients-table]]
+
+     [:> mui/Grid {:item true :xs 12}
+      [button title {:style {:margin-top 15}
+                     :onClick #(case action
+                                 :create (dispatch [::events/create-recipe])
+                                 :edit (dispatch [::events/edit-recipe]))}]]]]])
