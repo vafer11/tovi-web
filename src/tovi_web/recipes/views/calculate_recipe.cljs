@@ -26,7 +26,6 @@
 
         [text-field
          [:forms :calculate-recipe :values :dough-weight]
-         [:forms :calculate-recipe :errors :dough-weight]
          {:id :dough-weight
           :label "Dough Weight"
           :autoFocus true
@@ -49,8 +48,7 @@
               [:> mui/TableCell percentage]
               [:> mui/TableCell label]
               [:> mui/TableCell [text-field
-                                 [:forms :calculate-recipe :values :ingredients k :quantity]
-                                 [:forms :recipe :errors :ingredients k :quantity]
+                                 [:forms :calculate-recipe :ingredients k :quantity]
                                  {:id (str k)
                                   :variant :standard
                                   :fullWidth false

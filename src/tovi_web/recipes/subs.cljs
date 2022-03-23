@@ -1,5 +1,6 @@
 (ns tovi-web.recipes.subs
-  (:require [re-frame.core :refer [reg-sub subscribe]]))
+  (:require [re-frame.core :refer [reg-sub subscribe]]
+            [tovi-web.utils :as utils]))
 
 (reg-sub
  ::recipes
@@ -32,7 +33,7 @@
 (reg-sub
  ::form-recipe-ingredients
  (fn [db _]
-   (-> db :forms :recipe :values :ingredients vec)))
+   (-> db :forms :recipe :ingredients utils/format-ingredients)))
 
 (reg-sub
  ::ingredients

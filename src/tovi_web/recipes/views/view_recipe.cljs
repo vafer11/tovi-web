@@ -31,6 +31,6 @@
            [:> mui/TableRow
             [:> mui/TableCell (str percentage " %")]
             [:> mui/TableCell label]
-            [:> mui/TableCell (str unit " " quantity)]])]]]]
+            [:> mui/TableCell (str quantity " " unit)]])]]]]
      [:> mui/DialogActions
       [:> mui/Button {:onClick #(dispatch [:hide-dialog])} "Ok"]]]))

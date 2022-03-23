@@ -31,25 +31,21 @@
         (for [[k {:keys [quantity unit]}] recipe-ingredients]
           ^{:key k}
           [:> mui/TableRow
-           (let [percentage-value-path [:forms :recipe :values :ingredients k :percentage]
-                 percentage-error-path [:forms :recipe :errors :ingredients k :percentage]
-                 quantity-value-path [:forms :recipe :values :ingredients k :quantity]]
+           (let [percentage-path [:forms :recipe :ingredients k :percentage]
+                 quantity-path [:forms :recipe :ingredients k :quantity]]
              [:<>
               [:> mui/TableCell [text-field
-                                 percentage-value-path
-                                 percentage-error-path
-                                 {:id (str k)
-                                  :variant :standard
+                                 percentage-path
+                                 {:variant :standard
                                   :fullWidth false
                                   :onChange #(do
-                                              (dispatch [:tovi-web.components.events/set-path-db-value percentage-value-path (.. % -target -value)])
-                                              (dispatch [:tovi-web.components.events/set-path-db-value quantity-value-path (-> % .-target .-value utils/get-quantity)]))
+                                              (dispatch [:set-input-value percentage-path (.. % -target -value)])
+                                              (dispatch [:set-path-db-value quantity-path (-> % .-target .-value utils/get-quantity)]))
                                   :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
               [:> mui/TableCell [autocomplete
-                                 [:forms :recipe :values :ingredients k]
-                                 [:forms :recipe :values :ingredients k :label]
-                                 {:id (str k) 
-                                  :label "" 
+                                 [:forms :recipe :ingredients k :id]
+                                 [:forms :recipe :ingredients k :label]
+                                 {:label "" 
                                   :variant "standard"}
                                  ingredients]]
               [:> mui/TableCell (str quantity " " unit)]])
@@ -62,9 +58,8 @@
 
 (defn recipe [title action]
   (let [db (subscribe [::subs/get-db])]
-    [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30
-                                                              :margin-bottom 50}}
-     (-> @db :forms :recipe)
+    [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30 :margin-bottom 50}}
+     (-> @db :forms :recipe :ingredients)
 
      [:> mui/Typography {:component :h2 :variant :h4} title]
      [:form {:noValidate true :autoComplete "off"}
@@ -72,28 +67,24 @@
        [:> mui/Grid {:item true :xs 12}
         
         [text-field
-         [:forms :recipe :values :name]
-         [:forms :recipe :errors :name]
+         [:forms :recipe :name]
          {:id :name :label "Recipe" :required true :autoFocus true}]]
        
        [:> mui/Grid {:item true :xs 12}
         [text-field
-         [:forms :recipe :values :description]
-         [:forms :recipe :errors :description]
+         [:forms :recipe :description]
          {:id :description :label "Description" :required true}]]
        
        [:> mui/Grid {:item true :xs 12}
         [text-field
-         [:forms :recipe :values :steps]
-         [:forms :recipe :errors :steps]
+         [:forms :recipe :steps]
          {:id :steps :label "Steps" :multiline true :rows 5 :required true}]]
     
        [:> mui/Grid {:item true :xs 12}
-        [upload-image [:forms :recipe :values :image]]]
+        [upload-image [:forms :recipe :image]]]
        
        [:> mui/Grid {:item true :xs 12}
-        [editable-ingredients-table]
-        ]
+        [editable-ingredients-table]]
        
        [:> mui/Grid {:item true :xs 12}
         [button title {:style {:margin-top 15}
