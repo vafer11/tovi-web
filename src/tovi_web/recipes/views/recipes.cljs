@@ -28,7 +28,7 @@
                         :onClick #(dispatch [::events/show-edit-recipe id])}
      [:> ModeEditIcon]]
     [:> mui/IconButton {:aria-label "Calculate recipe"
-                        :onClick #(dispatch [:show-dialog :calculate-recipe id])}
+                        :onClick #(dispatch [::events/show-calculate-recipe id])}
      [:> CalculateIcon]]
     [:> mui/IconButton {:aria-label "Delete recipe"
                         :onClick #(dispatch [:show-dialog :delete-recipe id])

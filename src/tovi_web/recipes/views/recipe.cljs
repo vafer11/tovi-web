@@ -48,7 +48,7 @@
                                  {:label "" 
                                   :variant "standard"}
                                  ingredients]]
-              [:> mui/TableCell (str quantity " " unit)]])
+              [:> mui/TableCell (str (:value quantity) " " unit)]])
            
            [:> mui/TableCell [:> mui/IconButton
                               {:aria-label "Delete recipe ingredient"

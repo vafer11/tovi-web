@@ -23,12 +23,12 @@
                     :ingredients {1 {:id {:value 1 :error nil}
                                      :label {:value "Harina" :error nil}
                                      :percentage {:value 100 :error nil}
-                                     :quantity 1000
+                                     :quantity {:value 1000}
                                      :unit "gr"}
                                   2 {:id {:value 2 :error nil}
                                      :label {:value "Agua" :error nil}
                                      :percentage {:value 59 :error nil}
-                                     :quantity 590
+                                     :quantity {:value 590}
                                      :unit "gr"}}}}
    :ingredients {1 {:value 1 :label "Harina"}
                  2 {:value 2 :label "Agua"}

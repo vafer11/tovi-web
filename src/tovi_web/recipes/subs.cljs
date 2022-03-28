@@ -39,13 +39,3 @@
  ::ingredients
  (fn [db _]
    (-> db :ingredients vals vec)))
-
-;; Calculate recipe dialog subscriptions
-(reg-sub
- ::recipe-total-dough-weight
- (fn [db [_ id]]
-   (let [ingredients (get-in db [:recipes id :ingredients])]
-     (reduce-kv
-      (fn [acc _ {:keys [quantity]}] (+ acc quantity))
-      0
-      ingredients))))

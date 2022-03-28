@@ -23,14 +23,13 @@
                             :onClick #(dispatch [::events/Dowload-pdf id])}
          [:> PictureAsPdfIcon]]]
        [:> mui/Grid {:item true :xs 12}
-
         [text-field
-         [:forms :calculate-recipe :values :dough-weight]
+         [:forms :calculate-recipe :dough-weight]
          {:id :dough-weight
           :label "Dough Weight"
           :autoFocus true
+          :fullWidth false
           :type :number
-          :value @total-dough-weight
           :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]]
        [:> mui/Grid {:item true :xs 12}
         [:> mui/TableContainer {:component mui/Paper}
@@ -42,16 +41,21 @@
             [:> mui/TableCell "Ingredients"]
             [:> mui/TableCell "Quantity"]]]
           [:> mui/TableBody
-           (for [[k {:keys [id label percentage quantity unit]}] ingredients]
-             ^{:key id}
+           (for [[k {:keys [percentage label]}] ingredients]
+             ^{:key k}
              [:> mui/TableRow
-              [:> mui/TableCell percentage]
+              [:> mui/TableCell (str percentage " %")]
               [:> mui/TableCell label]
-              [:> mui/TableCell [text-field
-                                 [:forms :calculate-recipe :ingredients k :quantity]
-                                 {:id (str k)
-                                  :variant :standard
-                                  :fullWidth false
-                                  :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]]])]]]]]]
+              (let [quantity-path [:forms :calculate-recipe :ingredients k :quantity]]
+                [:> mui/TableCell [text-field
+                                   quantity-path
+                                   {:variant :standard
+                                    :onChange #(do
+                                                 (let [value (.. % -target -value)]
+                                                   (dispatch [:set-input-value quantity-path value])
+                                                   (dispatch [::events/balance-recipe id k value])))
+                                    :fullWidth false
+                                    :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]])
+              ])]]]]]]
      [:> mui/DialogActions
       [:> mui/Button {:onClick #(dispatch [:hide-dialog])} "Ok"]]]))
