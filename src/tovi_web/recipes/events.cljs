@@ -57,11 +57,16 @@
  ::balance-recipe
  (fn [db [_ recipe-id ingredient-id new-value]]
    (let [quantity (get-in db [:recipes recipe-id :ingredients ingredient-id :quantity])
-         ingredients-id-to-update (remove #{ingredient-id} 
+         ingredients-id-to-update (remove #{ingredient-id}
                                           (-> db (get-in [:forms :calculate-recipe :ingredients]) keys))
-         factor (/ quantity new-value)
+         factor (/ new-value quantity)
          reduce-fn (fn [acc id]
-                     (update-in acc [:forms :calculate-recipe :ingredients id :quantity :value] * factor))]
+                     (let [quantity (get-in db [:recipes recipe-id :ingredients id :quantity])]
+                       (update-in
+                        acc
+                        [:forms :calculate-recipe :ingredients id :quantity :value]
+                        #(js/parseInt (* quantity factor)))))]
+
      (reduce reduce-fn db ingredients-id-to-update))))
 
 ;; Used by calculate recipe

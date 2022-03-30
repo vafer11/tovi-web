@@ -1,6 +1,7 @@
 (ns tovi-web.recipes.views.calculate-recipe
   (:require ["@mui/material" :as mui]
             ["@mui/icons-material/PictureAsPdf" :default PictureAsPdfIcon]
+            [tovi-web.utils :as utils]
             [tovi-web.recipes.events :as events]
             [tovi-web.recipes.subs :as subs]
             [tovi-web.components.inputs :refer [text-field]]
@@ -29,7 +30,6 @@
           :label "Dough Weight"
           :autoFocus true
           :fullWidth false
-          :type :number
           :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]]
        [:> mui/Grid {:item true :xs 12}
         [:> mui/TableContainer {:component mui/Paper}
@@ -50,10 +50,10 @@
                 [:> mui/TableCell [text-field
                                    quantity-path
                                    {:variant :standard
-                                    :onChange #(do
-                                                 (let [value (.. % -target -value)]
-                                                   (dispatch [:set-input-value quantity-path value])
-                                                   (dispatch [::events/balance-recipe id k value])))
+                                    :onChange #(let [value (-> % .-target .-value utils/to-int)]
+                                                 (dispatch [:set-input-value quantity-path value])
+                                                 (dispatch [::events/balance-recipe id k value])
+                                                 (dispatch [::events/calculate-recipe-dough-weight]))
                                     :fullWidth false
                                     :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]])
               ])]]]]]]
