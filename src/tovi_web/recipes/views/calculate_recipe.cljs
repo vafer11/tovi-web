@@ -10,8 +10,7 @@
 
 (defn calculate-recipe-dialog []
   (let [show-dialog? @(subscribe [:show-dialog? :calculate-recipe])
-        {id :id ingredients :ingredients} @(subscribe [::subs/active-dialog-recipe :calculate-recipe])
-        total-dough-weight (subscribe [::subs/recipe-total-dough-weight id])]
+        {id :id ingredients :ingredients} @(subscribe [::subs/active-dialog-recipe :calculate-recipe])]
     [:> mui/Dialog {:open show-dialog?
                     :onClose #(dispatch [:hide-dialog])
                     :fullWidth true
@@ -24,13 +23,18 @@
                             :onClick #(dispatch [::events/Dowload-pdf id])}
          [:> PictureAsPdfIcon]]]
        [:> mui/Grid {:item true :xs 12}
-        [text-field
-         [:forms :calculate-recipe :dough-weight]
-         {:id :dough-weight
-          :label "Dough Weight"
-          :autoFocus true
-          :fullWidth false
-          :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]]
+        (let [dough-weight-path [:forms :calculate-recipe :dough-weight]]
+          [text-field
+           dough-weight-path
+           {:id :dough-weight
+            :label "Dough Weight"
+            :onChange #(let [value (-> % .-target .-value utils/to-int)]
+                         (dispatch [:set-input-value dough-weight-path value])
+                         (dispatch [::events/balance-recipe-by-dough-weigth value])
+                         )
+            :autoFocus true
+            :fullWidth false
+            :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}])]
        [:> mui/Grid {:item true :xs 12}
         [:> mui/TableContainer {:component mui/Paper}
          [:> mui/Table {;:sx {:minWidth 310} 

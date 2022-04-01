@@ -31,6 +31,7 @@
   (let [ingredients (ingredients-from-form ingredients)
         recipe (utils/from-form-map recipe [:name :description :steps])]
     (assoc recipe :ingredients ingredients)))
+
 ;; Used by edit recipe
 (reg-event-fx
  ::show-edit-recipe
@@ -38,6 +39,7 @@
    (let [recipe (-> db (get-in [:recipes id]) recipe-to-form)]
      {:db (assoc-in db [:forms :recipe] recipe)
       :fx [[:dispatch [:navigate :edit-recipe]]]})))
+
 ;; Used by edit recipe
 (reg-event-fx
  ::edit-recipe
@@ -46,6 +48,7 @@
          recipe-key (:id recipe)]
      {:db (assoc-in db [:recipes recipe-key] recipe)
       :fx [[:dispatch [:navigate :recipes]]]})))
+
 ;; Used by edit recipe
 (reg-event-db
  ::confirm-edit-recipe
@@ -75,10 +78,32 @@
  (fn [db _]
    (let [ingredients (get-in db [:forms :calculate-recipe :ingredients])
          dough-weight (reduce-kv
-                       (fn [acc _ {:keys [quantity]}] (+ acc (:value quantity)))
+                       (fn [acc _ {:keys [quantity]}] 
+                         (+ acc (:value quantity)))
                        0
                        ingredients)]
      (assoc-in db [:forms :calculate-recipe :dough-weight :value] dough-weight))))
+
+(defn recipe-total-percentage [ingredients]
+  (reduce-kv 
+   (fn [acc _ {:keys [percentage]}]
+     (+ acc (:value percentage)))
+   0
+   ingredients))
+
+;; Used by calculate recipe
+(reg-event-db
+ ::balance-recipe-by-dough-weigth
+ (fn [db [_ total-weigth]]
+   (let [ingredients (get-in db [:forms :calculate-recipe :ingredients])
+         total-percentage (recipe-total-percentage ingredients)
+         reduce-fn (fn [acc k {:keys [percentage]}]
+                     (update-in
+                      acc
+                      [:forms :calculate-recipe :ingredients k :quantity :value]
+                      #(-> (utils/rule-of-three total-weigth total-percentage (:value percentage))
+                           utils/to-int)))]
+     (reduce-kv reduce-fn db ingredients))))
 
 ;; Used by calculate recipe
 (reg-event-fx
