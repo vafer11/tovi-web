@@ -14,8 +14,10 @@
      [:> mui/DialogTitle
       [:> mui/Typography name]
       [:> mui/Typography description]]
-     [:> mui/DialogContent
-      [:img {:src (:src image)}]
+     [:> mui/DialogContent {:component mui/Paper :style {:overflow-x :hidden}}
+      ;[:img {:src (:src image)}]
+      [:> mui/Box {:component :img
+                   :src (:src image)}]
       [:> mui/Typography steps]
       [:> mui/TableContainer {:component mui/Paper}
        [:> mui/Table {;:sx {:minWidth 310} 

@@ -21,7 +21,7 @@
 (defn- ingredients-from-form [ingredients]
   (reduce-kv
    (fn [acc k v]
-     (->> (utils/from-form-map v [:id :percentage :label])
+     (->> (utils/from-form-map v [:id :percentage :label :quantity])
           (assoc acc k)))
    ingredients
    ingredients))
@@ -136,11 +136,11 @@
  (fn [db _]
    (let [ingredients (get-in db [:forms :recipe :ingredients])
          next-id (->> ingredients keys (reduce max 0) inc)]
-     (assoc-in db [:forms :recipe :values :ingredients next-id] {:id (str next-id)
-                                                                 :label ""
-                                                                 :percentage 0
-                                                                 :quantity ""
-                                                                 :unit "gr"}))))
+     (assoc-in db [:forms :recipe :ingredients next-id] {:id {:value next-id}
+                                                         :label {:value ""}
+                                                         :percentage {:value 0}
+                                                         :quantity {:value ""}
+                                                         :unit "gr"}))))
 (reg-event-fx
  ::create-recipe
  (fn [{:keys [db]} _]

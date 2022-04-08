@@ -19,12 +19,11 @@
     [:> mui/TextField props]))
 
 
-(defn autocomplete [path-id path-label {:keys [id label variant]} options]
+(defn autocomplete [path-id path-label {:keys [label variant]} options]
   (let [default-value @(subscribe [:input-value path-label])]
     (fn []
       (let [input-value @(subscribe [:input-value path-label])]
         [:> mui/Autocomplete {:disablePortal true
-                              :id id
                               :defaultValue default-value
                               :inputValue input-value
                               :onInputChange (fn [_ e] (dispatch [:set-input-value path-label e]))

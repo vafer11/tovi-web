@@ -12,7 +12,7 @@
             [reagent.core :refer [as-element]]))
 
 (defn- recipe-card [{:keys [id name description image steps]}]
-  [:> mui/Card {:sx {:maxWidth 425}}
+  [:> mui/Card {:sx {:maxWidth 405}}
    [:> mui/CardHeader {:avatar (as-element [:> mui/Avatar {:sx {:bgcolor "red"}} "AF"])
                        :title name
                        :subheader description}]

@@ -40,7 +40,7 @@
                                   :fullWidth false
                                   :onChange #(do
                                               (dispatch [:set-input-value percentage-path (.. % -target -value)])
-                                              (dispatch [:set-path-db-value quantity-path (-> % .-target .-value utils/get-quantity)]))
+                                              (dispatch [:set-input-value quantity-path (-> % .-target .-value utils/get-quantity)]))
                                   :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
               [:> mui/TableCell [autocomplete
                                  [:forms :recipe :ingredients k :id]
