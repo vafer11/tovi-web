@@ -40,6 +40,13 @@
      {:db (assoc-in db [:forms :recipe] recipe)
       :fx [[:dispatch [:navigate :edit-recipe]]]})))
 
+(reg-event-fx
+ ::show-recipe
+ (fn [{:keys [db]} [_ id mode]]
+   (let [recipe (-> db (get-in [:recipes id]) recipe-to-form)]
+     {:db (assoc-in db [:forms :recipe] recipe)
+      :fx [[:dispatch [:navigate mode]]]})))
+
 ;; Used by edit recipe
 (reg-event-fx
  ::edit-recipe

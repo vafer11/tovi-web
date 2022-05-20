@@ -17,7 +17,7 @@
 
 ;; home
 
-(defn home-panel []
+(defn home []
   (let [name "name"]
     [:div
      [:h1
@@ -28,11 +28,11 @@
       [:a {:on-click #(re-frame/dispatch [:navigate :about])}
        "go to About Page"]]]))
 
-(defmethod panels :home-panel [] [home-panel])
+(defmethod panels :home [] [home])
 
 ;; about
 
-(defn about-panel []
+(defn about []
   [:div
    [:h1 "This is the About Page."]
 
@@ -40,14 +40,14 @@
     [:a {:on-click #(re-frame/dispatch [:navigate :home])}
      "go to Home Page"]]])
 
-(defmethod panels :about-panel [] [about-panel])
+(defmethod panels :about [] [about])
 
-(defmethod panels :signup-panel [] [signup])
-(defmethod panels :signin-panel [] [signin])
-(defmethod panels :recipes-panel [] [recipes])
-(defmethod panels :create-recipe-panel [] [recipe "Create recipe" :create])
-(defmethod panels :edit-recipe-panel [] [recipe "Update recipe" :edit])
-
+(defmethod panels :signup [] [signup])
+(defmethod panels :signin [] [signin])
+(defmethod panels :recipes [] [recipes])
+(defmethod panels :create-recipe [] [recipe "Create recipe" :create])
+(defmethod panels :view-recipe [] [recipe "View recipe" :view])
+(defmethod panels :edit-recipe [] [recipe "Update recipe" :edit])
 
 ;; main
 

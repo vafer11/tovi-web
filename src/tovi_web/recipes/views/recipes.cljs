@@ -20,7 +20,7 @@
                       :height 195
                       :image (:src image)
                       :alt name
-                      :onClick #(dispatch [:show-dialog :view-recipe id])}]
+                      :onClick #(dispatch [::events/show-recipe id :view-recipe])}]
    [:> mui/CardContent
     [:> mui/Typography {:variant :body2} steps]]
    [:> mui/CardActions {:disableSpacing true}
@@ -38,8 +38,6 @@
 (defn recipes []
   (let [recipes (subscribe [::subs/recipes])]
     [:<>
-     [view-recipe-dialog]
-     [calculate-recipe-dialog]
      [delete-recipe-dialog]
      [:> mui/Container {:maxWidth :xl :style {:margin-top 20}}
       [:> mui/Button

@@ -9,15 +9,16 @@
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :refer [as-element]]))
 
-(defn- editable-ingredients-table []
+(defn- editable-ingredients-table [read-only?]
   (let [ingredients @(subscribe [::subs/ingredients])
         recipe-ingredients @(subscribe [::subs/form-recipe-ingredients])]
     [:<>
-     [:> mui/IconButton
-      {:onClick #(dispatch [::events/add-ingredient-to-recipe])
-       :aria-label "Add recipe ingredient"  
-       :style {:marginLeft :auto}}
-      [:> AddBoxIcon]]
+     (when (not read-only?)
+       [:> mui/IconButton
+        {:onClick #(dispatch [::events/add-ingredient-to-recipe])
+         :aria-label "Add recipe ingredient"
+         :style {:marginLeft :auto}}
+        [:> AddBoxIcon]])
      [:> mui/TableContainer {:component mui/Paper}
       [:> mui/Table {;:sx {:minWidth 450} 
                      :aria-label "Editable table"}
@@ -26,65 +27,86 @@
          [:> mui/TableCell "Percentage"]
          [:> mui/TableCell "Ingredients"]
          [:> mui/TableCell "Quantity"]
-         [:> mui/TableCell "Actions"]]]
+         (when (not read-only?) 
+           [:> mui/TableCell "Actions"])]]
        [:> mui/TableBody
         (for [[k {:keys [quantity unit]}] recipe-ingredients]
           ^{:key k}
-          [:> mui/TableRow
-           (let [percentage-path [:forms :recipe :ingredients k :percentage]
-                 quantity-path [:forms :recipe :ingredients k :quantity]]
-             [:<>
-              [:> mui/TableCell [text-field
-                                 percentage-path
-                                 {:variant :standard
-                                  :fullWidth false
-                                  :onChange #(do
-                                              (dispatch [:set-input-value percentage-path (.. % -target -value)])
-                                              (dispatch [:set-input-value quantity-path (-> % .-target .-value utils/get-quantity)]))
-                                  :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
-              [:> mui/TableCell [autocomplete
-                                 [:forms :recipe :ingredients k :id]
-                                 [:forms :recipe :ingredients k :label]
-                                 {:label "" 
-                                  :variant "standard"}
-                                 ingredients]]
-              [:> mui/TableCell (str (:value quantity) " " unit)]])
-           
-           [:> mui/TableCell [:> mui/IconButton
-                              {:aria-label "Delete recipe ingredient"
-                               :onClick #(dispatch [::events/remove-ingredient-from-recipe k])
-                               :style {:marginLeft :auto}}
-                              [:> DeleteIcon]]]])]]]]))
+          (let [percentage-path [:forms :recipe :ingredients k :percentage]
+                quantity-path [:forms :recipe :ingredients k :quantity]]
+            [:> mui/TableRow
+             [:> mui/TableCell
+              [text-field
+               percentage-path
+               {:variant :standard
+                :fullWidth false
+                :onChange #(do
+                             (dispatch [:set-input-value percentage-path (.. % -target -value)])
+                             (dispatch [:set-input-value quantity-path (-> % .-target .-value utils/get-quantity)]))
+                :InputProps {:readOnly read-only?
+                             :startAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
+             [:> mui/TableCell
+              [autocomplete
+               [:forms :recipe :ingredients k :id]
+               [:forms :recipe :ingredients k :label]
+               {:label ""
+                :variant "standard"
+                :InputProps {:readOnly read-only?}}
+               ingredients]]
+             [:> mui/TableCell
+              (str (:value quantity) " " unit)]
+             (when (not read-only?)
+               [:> mui/TableCell
+                [:> mui/IconButton
+                 {:aria-label "Delete recipe ingredient"
+                  :onClick #(dispatch [::events/remove-ingredient-from-recipe k])
+                  :style {:marginLeft :auto}}
+                 [:> DeleteIcon]]])]))]]]]))
 
-(defn recipe [title action]
-  [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30 :margin-bottom 50}}
-   [:> mui/Typography {:component :h2 :variant :h4} title]
-   [:form {:noValidate true :autoComplete "off"}
-    [:> mui/Grid {:container true :spacing 1}
-     [:> mui/Grid {:item true :xs 12}
+(defn recipe [title mode]
+  (let [read-only? (= mode :view)
+        src @(subscribe [::subs/recipe-image])]
+    [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30 :margin-bottom 50}}
+     [:> mui/Typography {:component :h2 :variant :h4} title]
+     [:form {:noValidate true :autoComplete "off"}
+      [:> mui/Grid {:container true :spacing 1}
+       [:> mui/Grid {:item true :xs 12}
+        [text-field
+         [:forms :recipe :name]
+         {:id :name 
+          :label "Recipe" 
+          :required true 
+          :InputProps {:readOnly read-only?}}]]
 
-      [text-field
-       [:forms :recipe :name]
-       {:id :name :label "Recipe" :required true :autoFocus true}]]
+       [:> mui/Grid {:item true :xs 12}
+        [text-field
+         [:forms :recipe :description]
+         {:id :description 
+          :label "Description" 
+          :required true
+          :InputProps {:readOnly read-only?}}]]
 
-     [:> mui/Grid {:item true :xs 12}
-      [text-field
-       [:forms :recipe :description]
-       {:id :description :label "Description" :required true}]]
+       [:> mui/Grid {:item true :xs 12}
+        [text-field
+         [:forms :recipe :steps]
+         {:id :steps 
+          :label "Steps" 
+          :multiline true 
+          :rows 5 
+          :required true
+          :InputProps {:readOnly read-only?}}]]
 
-     [:> mui/Grid {:item true :xs 12}
-      [text-field
-       [:forms :recipe :steps]
-       {:id :steps :label "Steps" :multiline true :rows 5 :required true}]]
+       [:> mui/Grid {:item true :xs 12}
+        (if read-only?
+          [:img {:src src :width "100%"}]
+          [upload-image [:forms :recipe :image]])]
 
-     [:> mui/Grid {:item true :xs 12}
-      [upload-image [:forms :recipe :image]]]
+       [:> mui/Grid {:item true :xs 12}
+        [editable-ingredients-table read-only?]]
 
-     [:> mui/Grid {:item true :xs 12}
-      [editable-ingredients-table]]
-
-     [:> mui/Grid {:item true :xs 12}
-      [button title {:style {:margin-top 15}
-                     :onClick #(case action
-                                 :create (dispatch [::events/create-recipe])
-                                 :edit (dispatch [::events/edit-recipe]))}]]]]])
+       (when (not read-only?)
+         [:> mui/Grid {:item true :xs 12}
+          [button title {:style {:margin-top 15}
+                         :onClick #(case mode
+                                     :create (dispatch [::events/create-recipe])
+                                     :edit (dispatch [::events/edit-recipe]))}]])]]]))

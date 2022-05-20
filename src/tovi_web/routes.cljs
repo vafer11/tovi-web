@@ -13,6 +13,7 @@
           "reset-pw" :reset-pw
           "recipes" :recipes
           "create-recipe" :create-recipe
+          "view-recipe" :view-recipe
           "edit-recipe" :edit-recipe
           "calculate-recipe" :calculate-recipe}]))
 
@@ -26,7 +27,7 @@
 
 (defn dispatch
   [route]
-  (let [panel (keyword (str (name (:handler route)) "-panel"))]
+  (let [panel (:handler route)]
     (re-frame/dispatch [:set-active-panel panel])))
 
 (defonce history
