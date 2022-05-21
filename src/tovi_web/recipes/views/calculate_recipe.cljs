@@ -8,33 +8,37 @@
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :refer [as-element]]))
 
-(defn calculate-recipe-dialog []
-  (let [show-dialog? @(subscribe [:show-dialog? :calculate-recipe])
-        {id :id ingredients :ingredients} @(subscribe [::subs/active-dialog-recipe :calculate-recipe])]
-    [:> mui/Dialog {:open show-dialog?
-                    :onClose #(dispatch [:hide-dialog])
-                    :fullWidth true
-                    :maxWidth :md}
-     [:> mui/DialogTitle [:> mui/Typography "Calculate"]]
-     [:> mui/DialogContent
+(defn calculate-recipe []
+  (let [{id :id ingredients :ingredients} @(subscribe [::subs/recipe-form])]
+    [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30 :margin-bottom 50}}
+     [:> mui/Typography {:component :h2 :variant :h4} "Calculate recipe"]
+     [:form {:noValidate true :autoComplete "off"}
       [:> mui/Grid {:container true :spacing 1}
-       [:> mui/Grid {:container true :item true :justifyContent "right" :alignItems "right" :xs 12}
-        [:> mui/IconButton {:aria-label "Download PDF"
-                            :onClick #(dispatch [::events/Dowload-pdf id])}
-         [:> PictureAsPdfIcon]]]
-       [:> mui/Grid {:item true :xs 12}
-        (let [dough-weight-path [:forms :calculate-recipe :dough-weight]]
+              
+       [:> mui/Grid {:item true :xs 4}
+        [text-field
+         [:forms :recipe :name]
+         {:id :name
+          :label "Recipe"
+          :required true
+          :InputProps {:readOnly true}}]]
+
+       [:> mui/Grid {:item true :xs 4}
+        (let [dough-weight-path [:forms :recipe :dough-weight]]
           [text-field
            dough-weight-path
            {:id :dough-weight
             :label "Dough Weight"
             :onChange #(let [value (-> % .-target .-value utils/to-int)]
                          (dispatch [:set-input-value dough-weight-path value])
-                         (dispatch [::events/balance-recipe-by-dough-weigth value])
-                         )
-            :autoFocus true
-            :fullWidth false
+                         (dispatch [::events/balance-recipe-by-dough-weigth value]))
             :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}])]
+       
+       [:> mui/Grid {:container true :item true :justifyContent "right" :alignItems "right" :xs 4}
+        [:> mui/IconButton {:aria-label "Download PDF"
+                            :onClick #(dispatch [::events/download-pdf id])}
+         [:> PictureAsPdfIcon]]]
+
        [:> mui/Grid {:item true :xs 12}
         [:> mui/TableContainer {:component mui/Paper}
          [:> mui/Table {;:sx {:minWidth 310} 
@@ -48,9 +52,9 @@
            (for [[k {:keys [percentage label]}] ingredients]
              ^{:key k}
              [:> mui/TableRow
-              [:> mui/TableCell (str percentage " %")]
-              [:> mui/TableCell label]
-              (let [quantity-path [:forms :calculate-recipe :ingredients k :quantity]]
+              [:> mui/TableCell (str (:value percentage) " %")]
+              [:> mui/TableCell (:value label)]
+              (let [quantity-path [:forms :recipe :ingredients k :quantity]]
                 [:> mui/TableCell [text-field
                                    quantity-path
                                    {:variant :standard
@@ -59,7 +63,4 @@
                                                  (dispatch [::events/balance-recipe id k value])
                                                  (dispatch [::events/calculate-recipe-dough-weight]))
                                     :fullWidth false
-                                    :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]])
-              ])]]]]]]
-     [:> mui/DialogActions
-      [:> mui/Button {:onClick #(dispatch [:hide-dialog])} "Ok"]]]))
+                                    :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]])])]]]]]]]))

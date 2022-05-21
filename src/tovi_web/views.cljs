@@ -7,6 +7,7 @@
    [tovi-web.account.views.signin :refer [signin]]
    [tovi-web.recipes.views.recipes :refer [recipes]]
    [tovi-web.recipes.views.recipe :refer [recipe]]
+   [tovi-web.recipes.views.calculate-recipe :refer [calculate-recipe]]
    [tovi-web.nav.events :as events]
    [tovi-web.nav.subs :as subs]
    [re-frame.core :as re-frame]))
@@ -48,6 +49,7 @@
 (defmethod panels :create-recipe [] [recipe "Create recipe" :create])
 (defmethod panels :view-recipe [] [recipe "View recipe" :view])
 (defmethod panels :edit-recipe [] [recipe "Update recipe" :edit])
+(defmethod panels :calculate-recipe [] [calculate-recipe])
 
 ;; main
 

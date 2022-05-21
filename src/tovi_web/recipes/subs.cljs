@@ -27,6 +27,11 @@
  (fn [db _]
    (-> db :forms :recipe :image :src)))
 
+(reg-sub
+ ::recipe-form
+ (fn [db _]
+   (-> db :forms :recipe)))
+
 
 (reg-sub
  ::get-db

@@ -3,8 +3,6 @@
             ["@mui/icons-material/ModeEdit" :default ModeEditIcon]
             ["@mui/icons-material/Calculate" :default CalculateIcon]
             ["@mui/icons-material/Delete" :default DeleteIcon]
-            [tovi-web.recipes.views.view-recipe :refer [view-recipe-dialog]]
-            [tovi-web.recipes.views.calculate-recipe :refer [calculate-recipe-dialog]]
             [tovi-web.recipes.views.delete-recipe :refer [delete-recipe-dialog]]
             [tovi-web.recipes.events :as events]
             [tovi-web.recipes.subs :as subs]
@@ -25,10 +23,10 @@
     [:> mui/Typography {:variant :body2} steps]]
    [:> mui/CardActions {:disableSpacing true}
     [:> mui/IconButton {:aria-label "Edit recipe"
-                        :onClick #(dispatch [::events/show-edit-recipe id])}
+                        :onClick #(dispatch [::events/show-recipe id :edit-recipe])}
      [:> ModeEditIcon]]
     [:> mui/IconButton {:aria-label "Calculate recipe"
-                        :onClick #(dispatch [::events/show-calculate-recipe id])}
+                        :onClick #(dispatch [::events/show-recipe id :calculate-recipe])}
      [:> CalculateIcon]]
     [:> mui/IconButton {:aria-label "Delete recipe"
                         :onClick #(dispatch [:show-dialog :delete-recipe id])
