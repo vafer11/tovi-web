@@ -15,7 +15,7 @@
      [:form {:noValidate true :autoComplete "off"}
       [:> mui/Grid {:container true :spacing 1}
               
-       [:> mui/Grid {:item true :xs 4}
+       [:> mui/Grid {:item true :xs 5}
         [text-field
          [:forms :recipe :name]
          {:id :name
@@ -23,7 +23,7 @@
           :required true
           :InputProps {:readOnly true}}]]
 
-       [:> mui/Grid {:item true :xs 4}
+       [:> mui/Grid {:item true :xs 5}
         (let [dough-weight-path [:forms :recipe :dough-weight]]
           [text-field
            dough-weight-path
@@ -34,7 +34,7 @@
                          (dispatch [::events/balance-recipe-by-dough-weigth value]))
             :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}])]
        
-       [:> mui/Grid {:container true :item true :justifyContent "right" :alignItems "right" :xs 4}
+       [:> mui/Grid {:container true :item true :justifyContent "right" :alignItems "right" :xs 2}
         [:> mui/IconButton {:aria-label "Download PDF"
                             :onClick #(dispatch [::events/download-pdf id])}
          [:> PictureAsPdfIcon]]]

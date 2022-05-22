@@ -3,7 +3,7 @@
             ["@mui/icons-material/Delete" :default DeleteIcon]
             ["@mui/icons-material/AddBox" :default AddBoxIcon]
             [tovi-web.utils :as utils]
-            [tovi-web.components.inputs :refer [text-field autocomplete button upload-image]]
+            [tovi-web.components.inputs :refer [text-field select autocomplete button upload-image]]
             [tovi-web.recipes.events :as events]
             [tovi-web.recipes.subs :as subs]
             [re-frame.core :refer [dispatch subscribe]]
@@ -35,28 +35,42 @@
           (let [percentage-path [:forms :recipe :ingredients k :percentage]
                 quantity-path [:forms :recipe :ingredients k :quantity]]
             [:> mui/TableRow
-             [:> mui/TableCell
+             [:> mui/TableCell {:width "30%"}
               [text-field
                percentage-path
                {:variant :standard
-                :fullWidth false
+                :fullWidth true
                 :onChange #(do
                              (dispatch [:set-input-value percentage-path (.. % -target -value)])
                              (dispatch [:set-input-value quantity-path (-> % .-target .-value utils/get-quantity)]))
                 :InputProps {:readOnly read-only?
                              :startAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
-             [:> mui/TableCell
+             [:> mui/TableCell {:width "45%"}
+              (comment [autocomplete
+                        [:forms :recipe :ingredients k :id]
+                        [:forms :recipe :ingredients k :label]
+                        {:label ""
+                         :variant "standard"
+                         :InputProps {:readOnly read-only?}}
+                        ingredients])
               [autocomplete
                [:forms :recipe :ingredients k :id]
                [:forms :recipe :ingredients k :label]
                {:label ""
                 :variant "standard"
                 :InputProps {:readOnly read-only?}}
-               ingredients]]
-             [:> mui/TableCell
+               ingredients]
+              (comment [select
+                        [:forms :recipe :ingredients k :id]
+                        {:label "Ingredient"
+                         :variant "standard"
+                         :InputProps {:readOnly read-only?}}
+                        ingredients])
+              ]
+             [:> mui/TableCell {:width "15%"}
               (str (:value quantity) " " unit)]
              (when (not read-only?)
-               [:> mui/TableCell
+               [:> mui/TableCell {:width "10%"}
                 [:> mui/IconButton
                  {:aria-label "Delete recipe ingredient"
                   :onClick #(dispatch [::events/remove-ingredient-from-recipe k])
