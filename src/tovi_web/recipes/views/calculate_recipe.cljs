@@ -32,7 +32,7 @@
             :onChange #(let [value (-> % .-target .-value utils/to-int)]
                          (dispatch [:set-input-value dough-weight-path value])
                          (dispatch [::events/balance-recipe-by-dough-weigth value]))
-            :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}])]
+            :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}])]
        
        [:> mui/Grid {:container true :item true :justifyContent "right" :alignItems "right" :xs 2}
         [:> mui/IconButton {:aria-label "Download PDF"
@@ -50,7 +50,7 @@
             [:> mui/TableCell "Quantity"]]]
           [:> mui/TableBody
            (for [[k {:keys [percentage label]}] ingredients]
-             ^{:key k}
+             ^{:key (str k)}
              [:> mui/TableRow
               [:> mui/TableCell (str (:value percentage) " %")]
               [:> mui/TableCell (:value label)]
@@ -63,4 +63,4 @@
                                                  (dispatch [::events/balance-recipe id k value])
                                                  (dispatch [::events/calculate-recipe-dough-weight]))
                                     :fullWidth false
-                                    :InputProps {:startAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]])])]]]]]]]))
+                                    :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]])])]]]]]]]))

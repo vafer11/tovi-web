@@ -18,25 +18,24 @@
                      input-props)]
     [:> mui/TextField props]))
 
-(defn select [path {:keys [label] :as props} items]
+(defn select [path {:keys [label id] :as input-props} items]
   (let [value @(subscribe [:input-value path])
         error-msg @(subscribe [:input-error path])
-        error? @(subscribe [:input-error? path])]
+        error? @(subscribe [:input-error? path])
+        props (merge {:labelId (str "select-" id)
+                      :value value
+                      :onChange #(dispatch [:set-input-value path (.. % -target -value)])}
+                     input-props)]
     [:> mui/FormControl
-     {:variant :outlined
-      :margin :normal
-      :required true
+     {:fullWidth true
+      :variant "standard"
       :error error?}
-     [:> mui/InputLabel {:id (str "select-" label)} label]
-     [:> mui/Select (merge {:labelId (str "select-" label)
-                            :value value
-                            :on-change #(dispatch [:set-input-value path (.. % -target -value)])}
-                           props)
-      (for [{:keys [id label]} items]
-        ^{:key id}
-        [:> mui/MenuItem {:value id} label])]
+     [:> mui/InputLabel {:id (str "select-" id)} label]
+     [:> mui/Select props
+      (for [{:keys [value label]} items]
+        ^{:key (str "select-" value)}
+        [:> mui/MenuItem {:value value} label])]
      [:> mui/FormHelperText error-msg]]))
-
 
 
 (defn upload-image [path]

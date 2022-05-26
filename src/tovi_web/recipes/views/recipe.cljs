@@ -31,46 +31,31 @@
            [:> mui/TableCell "Actions"])]]
        [:> mui/TableBody
         (for [[k {:keys [quantity unit]}] recipe-ingredients]
-          ^{:key k}
+          ^{:key (str k)}
           (let [percentage-path [:forms :recipe :ingredients k :percentage]
                 quantity-path [:forms :recipe :ingredients k :quantity]]
-            [:> mui/TableRow
-             [:> mui/TableCell {:width "30%"}
+            [:> mui/TableRow {:key (str k)}
+             [:> mui/TableCell {:width "15%"}
               [text-field
                percentage-path
                {:variant :standard
-                :fullWidth true
                 :onChange #(do
                              (dispatch [:set-input-value percentage-path (.. % -target -value)])
                              (dispatch [:set-input-value quantity-path (-> % .-target .-value utils/get-quantity)]))
                 :InputProps {:readOnly read-only?
-                             :startAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
-             [:> mui/TableCell {:width "45%"}
-              (comment [autocomplete
-                        [:forms :recipe :ingredients k :id]
-                        [:forms :recipe :ingredients k :label]
-                        {:label ""
-                         :variant "standard"
-                         :InputProps {:readOnly read-only?}}
-                        ingredients])
-              [autocomplete
+                             :endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
+             [:> mui/TableCell {:width "55%"}
+              [select
                [:forms :recipe :ingredients k :id]
-               [:forms :recipe :ingredients k :label]
-               {:label ""
-                :variant "standard"
-                :InputProps {:readOnly read-only?}}
-               ingredients]
-              (comment [select
-                        [:forms :recipe :ingredients k :id]
-                        {:label "Ingredient"
-                         :variant "standard"
-                         :InputProps {:readOnly read-only?}}
-                        ingredients])
-              ]
+               {:id "ingredient"
+                :autoWidth true
+                :label ""
+                :inputProps {:readOnly read-only?}}
+               ingredients]]
              [:> mui/TableCell {:width "15%"}
               (str (:value quantity) " " unit)]
              (when (not read-only?)
-               [:> mui/TableCell {:width "10%"}
+               [:> mui/TableCell {:width "15%"}
                 [:> mui/IconButton
                  {:aria-label "Delete recipe ingredient"
                   :onClick #(dispatch [::events/remove-ingredient-from-recipe k])
