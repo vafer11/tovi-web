@@ -8,6 +8,7 @@
    [tovi-web.recipes.views.recipes :refer [recipes]]
    [tovi-web.recipes.views.recipe :refer [recipe]]
    [tovi-web.recipes.views.calculate-recipe :refer [calculate-recipe]]
+   [tovi-web.nav.views.nav :refer [nav]]
    [tovi-web.nav.events :as events]
    [tovi-web.nav.subs :as subs]
    [re-frame.core :as re-frame]))
@@ -58,4 +59,5 @@
     [:> ThemeProvider {:theme (tovi-theme)}
      [:<>
       [:> CssBaseline]
+      [nav]      
       (panels @active-panel)]]))
