@@ -11,7 +11,7 @@
 (defn calculate-recipe []
   (let [{id :id ingredients :ingredients} @(subscribe [::subs/recipe-form])]
     [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30 :margin-bottom 50}}
-     [:> mui/Typography {:component :h2 :variant :h4} "Calculate recipe"]
+     [:> mui/Typography {:component :h2 :variant :h5} "Calculate recipe"]
      [:form {:noValidate true :autoComplete "off"}
       [:> mui/Grid {:container true :spacing 1}
               
@@ -61,6 +61,8 @@
                  [text-field
                   quantity-path
                   {:variant :standard
+                   :margin :none
+                   :size :small
                    :onChange #(let [value (-> % .-target .-value utils/to-int)]
                                 (dispatch [:set-input-value quantity-path value])
                                 (dispatch [::events/balance-recipe id k value])

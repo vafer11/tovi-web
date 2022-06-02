@@ -12,6 +12,8 @@
           "signin" :signin
           "reset-pw" :reset-pw
           "recipes" :recipes
+          "orders" :orders
+          "admin" :admin
           "create-recipe" :create-recipe
           "view-recipe" :view-recipe
           "edit-recipe" :edit-recipe

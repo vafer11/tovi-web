@@ -9,7 +9,7 @@
 ;}}
 (def default-db
   {:name "re-frame"
-   :account {:uid "uid"}
+   :account {:uid "uid" :name "Agustín Fernández" :email "agufercar@gmail.com"}
    :forms {:signin {:email {:value "" :error nil}
                     :password {:value "" :error nil}}
            :signup {:first-name {:value "" :error nil}

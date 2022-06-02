@@ -7,7 +7,8 @@
    ["@mui/icons-material/SupervisorAccount" :default SupervisorAccountIcon]
    ["@mui/icons-material/ListAlt" :default ListAltIcon]
    [reagent.core :as r]
-   [re-frame.core :refer [dispatch]]))
+   [re-frame.core :refer [dispatch subscribe]]
+   [tovi-web.account.subs :as subs]))
 
 (defn menu [open?]
   [:> mui/Box {:role :presentation
@@ -21,13 +22,13 @@
       [:> mui/ListItemText {:primary "My Recipes"}]]]
     
     [:> mui/ListItem {:key "Orders" :disablePadding true}
-     [:> mui/ListItemButton
+     [:> mui/ListItemButton {:onClick #(dispatch [:navigate :orders])}
       [:> mui/ListItemIcon
        [:> ListAltIcon]]
       [:> mui/ListItemText {:primary "Orders"}]]]
     
     [:> mui/ListItem {:key "Admin" :disablePadding true}
-     [:> mui/ListItemButton
+     [:> mui/ListItemButton {:onClick #(dispatch [:navigate :admin])}
       [:> mui/ListItemIcon
        [:> SupervisorAccountIcon]]
       [:> mui/ListItemText {:primary "Admin"}]]]
@@ -42,7 +43,9 @@
 
 
 (defn authenticated []
-  (let [open? (r/atom false)]
+  (let [open? (r/atom false)
+        {name :name email :email} @(subscribe [::subs/user-information])
+        avatar-src "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"]
     (fn []
       [:> mui/AppBar {:position :static}
        [:> mui/Toolbar
@@ -54,12 +57,16 @@
         [:> mui/Typography {:variant :h6} "My Recipes"]]
        [:div
         [:> mui/Drawer {:anchor "left"
+                        ;:PaperProps {:sx {:backgroundColor "#2c387e":color "white"}}
                         :open @open?
                         :onClose #(reset! open? false)}
          [:> mui/Toolbar
           [:> mui/Avatar {:alt "Profile image"
+                          :src avatar-src
                           ;:sx {:width 24 :height 24}
                           } "AF"]
-          [:> mui/Typography "Agustín Fernández"]]
+          [:> mui/Box {:sx {:ml 2}}
+           [:> mui/Typography {:variant :subtitle1} name]
+           [:> mui/Typography {:variant :caption} email]]]
          [:> mui/Divider]
          [menu open?]]]])))

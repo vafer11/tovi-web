@@ -5,7 +5,9 @@
   (createTheme 
    (clj->js
     {:palette
-     {:primary  {:main "#618833"}
-      :secondary {:main "#b28900"}}
+     {:background {:default "#fafafa"}
+      :primary  {:main "#121858"}
+      :secondary {:main "#009688"}}
      :typography
-     {:useNextVariants true}})))
+     {:useNextVariants true
+      :h5 {:color "#121858"} }})))

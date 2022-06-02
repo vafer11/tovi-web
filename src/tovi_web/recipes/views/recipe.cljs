@@ -56,6 +56,8 @@
                percentage-path
                {:variant :standard
                 :fullWidth false
+                :margin :none
+                :size :small
                 :onChange #(do
                              (dispatch [:set-input-value percentage-path (.. % -target -value)])
                              (dispatch [:set-input-value quantity-path (-> % .-target .-value utils/get-quantity)]))
@@ -66,6 +68,7 @@
                [:forms :recipe :ingredients k :id]
                {:id "ingredient"
                 :autoWidth true
+                :size :small
                 :label ""
                 :inputProps {:readOnly read-only?}}
                ingredients]]
@@ -82,7 +85,7 @@
   (let [read-only? (= mode :view)
         src @(subscribe [::subs/recipe-image])]
     [:> mui/Container {:component :main :maxWidth :md :style {:margin-top 30 :margin-bottom 50}}
-     [:> mui/Typography {:component :h2 :variant :h4} title]
+     [:> mui/Typography {:component :h2 :variant :h5} title]
      [:form {:noValidate true :autoComplete "off"}
       [:> mui/Grid {:container true :spacing 1}
        [:> mui/Grid {:item true :xs 12}
