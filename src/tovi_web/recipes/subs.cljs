@@ -1,5 +1,5 @@
 (ns tovi-web.recipes.subs
-  (:require [re-frame.core :refer [reg-sub subscribe]]
+  (:require [re-frame.core :refer [reg-sub]]
             [tovi-web.utils :as utils]))
 
 (reg-sub
@@ -13,15 +13,6 @@
  (fn [db [_ dialog]]
    (get-in db [:active-dialog dialog :active-recipe-id])))
 
-; Used by view-recipe and calculate recipe dialog.
-(reg-sub
- ::active-dialog-recipe
- (fn [[_ dialog]]
-   [(subscribe [::active-dialog-recipe-id dialog])
-    (subscribe [::recipes])])
- (fn [[id recipes]]
-   (recipes id)))
-
 (reg-sub
  ::recipe-image
  (fn [db _]
@@ -31,13 +22,6 @@
  ::recipe-form
  (fn [db _]
    (-> db :forms :recipe)))
-
-
-(reg-sub
- ::get-db
- (fn [db _]
-   db))
-
 
 ;; Used by recipe component 
 (reg-sub

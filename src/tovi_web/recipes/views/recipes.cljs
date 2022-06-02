@@ -45,6 +45,6 @@
       [:> mui/Grid {:container true :spacing 4}
        (for [[k v] @recipes]
          ^{:key (str k "-" v)}
-         [:> mui/Grid {:item true :xs 12 :md 6 :lg 4 :xl 3 :align :center}
+         [:> mui/Grid {:item true :xs 12 :sm 6 :md 4 :xl 3 :align :center}
           [recipe-card v]])]]]))
 

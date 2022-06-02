@@ -2,8 +2,10 @@
   (:require
    ["@mui/material" :as mui]
    ["@mui/icons-material/Menu" :default MenuIcon]
-   ["@mui/icons-material/AccountBox" :default AccountBoxIcon]
-   ["@mui/icons-material/Inbox" :default InboxIcon]
+   ["@mui/icons-material/BakeryDining" :default BakeryDiningIcon]
+   ["@mui/icons-material/Logout" :default LogoutIcon]
+   ["@mui/icons-material/SupervisorAccount" :default SupervisorAccountIcon]
+   ["@mui/icons-material/ListAlt" :default ListAltIcon]
    [reagent.core :as r]
    [re-frame.core :refer [dispatch]]))
 
@@ -15,28 +17,28 @@
     [:> mui/ListItem {:key "Recipes" :disablePadding true}
      [:> mui/ListItemButton {:onClick #(dispatch [:navigate :recipes])}
       [:> mui/ListItemIcon
-       [:> InboxIcon]]
+       [:> BakeryDiningIcon]]
       [:> mui/ListItemText {:primary "My Recipes"}]]]
     
-    [:> mui/ListItem {:key "Account" :disablePadding true}
+    [:> mui/ListItem {:key "Orders" :disablePadding true}
      [:> mui/ListItemButton
       [:> mui/ListItemIcon
-       [:> AccountBoxIcon]]
-      [:> mui/ListItemText {:primary "My Account"}]]]
+       [:> ListAltIcon]]
+      [:> mui/ListItemText {:primary "Orders"}]]]
     
-    [:> mui/ListItem {:key "Recipes" :disablePadding true}
+    [:> mui/ListItem {:key "Admin" :disablePadding true}
      [:> mui/ListItemButton
       [:> mui/ListItemIcon
-       [:> AccountBoxIcon]]
-      [:> mui/ListItemText {:primary "My Account"}]]]
+       [:> SupervisorAccountIcon]]
+      [:> mui/ListItemText {:primary "Admin"}]]]
     
     [:> mui/Divider]
 
     [:> mui/ListItem {:key "Account" :disablePadding true}
      [:> mui/ListItemButton
       [:> mui/ListItemIcon
-       [:> AccountBoxIcon]]
-      [:> mui/ListItemText {:primary "My Account"}]]]]])
+       [:> LogoutIcon]]
+      [:> mui/ListItemText {:primary "Sign Out"}]]]]])
 
 
 (defn authenticated []
@@ -55,7 +57,9 @@
                         :open @open?
                         :onClose #(reset! open? false)}
          [:> mui/Toolbar
-          [:> mui/Typography {:variant :h6} "Agustín Fernández"]
-          ]
+          [:> mui/Avatar {:alt "Profile image"
+                          ;:sx {:width 24 :height 24}
+                          } "AF"]
+          [:> mui/Typography "Agustín Fernández"]]
          [:> mui/Divider]
          [menu open?]]]])))

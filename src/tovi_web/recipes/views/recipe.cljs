@@ -3,22 +3,39 @@
             ["@mui/icons-material/Delete" :default DeleteIcon]
             ["@mui/icons-material/AddBox" :default AddBoxIcon]
             [tovi-web.utils :as utils]
-            [tovi-web.components.inputs :refer [text-field select autocomplete button upload-image]]
+            [tovi-web.components.inputs :refer [text-field select button upload-image]]
             [tovi-web.recipes.events :as events]
             [tovi-web.recipes.subs :as subs]
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :refer [as-element]]))
 
+(defn- read-only-ingredients-table []
+  (let [recipe-ingredients @(subscribe [::subs/form-recipe-ingredients])]
+    [:> mui/TableContainer {:component mui/Paper}
+     [:> mui/Table
+      [:> mui/TableHead
+       [:> mui/TableRow
+        [:> mui/TableCell "Percentage"]
+        [:> mui/TableCell "Ingredients"]
+        [:> mui/TableCell "Quantity"]]]
+      [:> mui/TableBody
+       (for [[k {:keys [percentage label quantity]}] recipe-ingredients]
+         ^{:key (str k)}
+         [:> mui/TableRow {:key (str k)}
+          [:> mui/TableCell (str percentage " %")]
+          [:> mui/TableCell (str label)]
+          [:> mui/TableCell (str (:value quantity) " gr")]])]]]))
+
+
 (defn- editable-ingredients-table [read-only?]
   (let [ingredients @(subscribe [::subs/ingredients])
         recipe-ingredients @(subscribe [::subs/form-recipe-ingredients])]
     [:<>
-     (when (not read-only?)
-       [:> mui/IconButton
-        {:onClick #(dispatch [::events/add-ingredient-to-recipe])
-         :aria-label "Add recipe ingredient"
-         :style {:marginLeft :auto}}
-        [:> AddBoxIcon]])
+     [:> mui/IconButton
+      {:onClick #(dispatch [::events/add-ingredient-to-recipe])
+       :aria-label "Add recipe ingredient"
+       :style {:marginLeft :auto}}
+      [:> AddBoxIcon]]
      [:> mui/TableContainer {:component mui/Paper}
       [:> mui/Table {;:sx {:minWidth 450} 
                      :aria-label "Editable table"}
@@ -27,24 +44,24 @@
          [:> mui/TableCell "Percentage"]
          [:> mui/TableCell "Ingredients"]
          [:> mui/TableCell "Quantity"]
-         (when (not read-only?) 
-           [:> mui/TableCell "Actions"])]]
+         [:> mui/TableCell "Actions"]]]
        [:> mui/TableBody
-        (for [[k {:keys [quantity unit]}] recipe-ingredients]
+        (for [[k {:keys [quantity]}] recipe-ingredients]
           ^{:key (str k)}
           (let [percentage-path [:forms :recipe :ingredients k :percentage]
                 quantity-path [:forms :recipe :ingredients k :quantity]]
             [:> mui/TableRow {:key (str k)}
-             [:> mui/TableCell {:width "15%"}
+             [:> mui/TableCell {:width "30%"}
               [text-field
                percentage-path
                {:variant :standard
+                :fullWidth false
                 :onChange #(do
                              (dispatch [:set-input-value percentage-path (.. % -target -value)])
                              (dispatch [:set-input-value quantity-path (-> % .-target .-value utils/get-quantity)]))
                 :InputProps {:readOnly read-only?
                              :endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
-             [:> mui/TableCell {:width "55%"}
+             [:> mui/TableCell {:width "30%"}
               [select
                [:forms :recipe :ingredients k :id]
                {:id "ingredient"
@@ -52,15 +69,14 @@
                 :label ""
                 :inputProps {:readOnly read-only?}}
                ingredients]]
-             [:> mui/TableCell {:width "15%"}
-              (str (:value quantity) " " unit)]
-             (when (not read-only?)
-               [:> mui/TableCell {:width "15%"}
-                [:> mui/IconButton
-                 {:aria-label "Delete recipe ingredient"
-                  :onClick #(dispatch [::events/remove-ingredient-from-recipe k])
-                  :style {:marginLeft :auto}}
-                 [:> DeleteIcon]]])]))]]]]))
+             [:> mui/TableCell {:width "20%"}
+              (str (:value quantity) " gr")]
+             [:> mui/TableCell {:width "20%"}
+              [:> mui/IconButton
+               {:aria-label "Delete recipe ingredient"
+                :onClick #(dispatch [::events/remove-ingredient-from-recipe k])
+                :style {:marginLeft :auto}}
+               [:> DeleteIcon]]]]))]]]]))
 
 (defn recipe [title mode]
   (let [read-only? (= mode :view)
@@ -101,8 +117,9 @@
           [upload-image [:forms :recipe :image]])]
 
        [:> mui/Grid {:item true :xs 12}
-        [editable-ingredients-table read-only?]]
-
+        (if read-only?
+          [read-only-ingredients-table]
+          [editable-ingredients-table read-only?])]
        (when (not read-only?)
          [:> mui/Grid {:item true :xs 12}
           [button title {:style {:margin-top 15}
