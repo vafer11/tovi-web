@@ -4,7 +4,6 @@
 (reg-event-db
  :set-input-value
  (fn [db [_ path value]]
-   (.log js/console (str path))
    (assoc-in db (conj path :value) value)))
 
 (reg-sub

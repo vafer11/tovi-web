@@ -18,13 +18,16 @@
                      input-props)]
     [:> mui/TextField props]))
 
-(defn select [path {:keys [label id] :as input-props} items]
-  (let [value @(subscribe [:input-value path])
-        error-msg @(subscribe [:input-error path])
-        error? @(subscribe [:input-error? path])
+(defn select [id-path label-path {:keys [label id] :as input-props} items]
+  (let [value @(subscribe [:input-value id-path])
+        error-msg @(subscribe [:input-error id-path])
+        error? @(subscribe [:input-error? id-path])
         props (merge {:labelId (str "select-" id)
                       :value value
-                      :onChange #(dispatch [:set-input-value path (.. % -target -value)])}
+                      :onChange #(let [value (.. % -target -value)
+                                       label (get-in items [value :label])]
+                                   (dispatch [:set-input-value label-path label])
+                                   (dispatch [:set-input-value id-path value]))}
                      input-props)]
     [:> mui/FormControl
      {:fullWidth true
@@ -32,7 +35,7 @@
       :error error?}
      [:> mui/InputLabel {:id (str "select-" id)} label]
      [:> mui/Select props
-      (for [{:keys [value label]} items]
+      (for [[_ {:keys [value label]}] items]
         ^{:key (str "select-" value)}
         [:> mui/MenuItem {:value value} label])]
      [:> mui/FormHelperText error-msg]]))
@@ -58,20 +61,3 @@
                          :color :primary
                          :fullWidth true}
                         props) name])
-
-;; Not used
-(defn autocomplete [path-id path-label {:keys [label variant]} options]
-  (let [default-value @(subscribe [:input-value path-label])]
-    (fn []
-      (let [input-value @(subscribe [:input-value path-label])]
-        [:> mui/Autocomplete {:disablePortal true
-                              :defaultValue default-value
-                              :inputValue input-value
-                              :onInputChange (fn [_ e] (dispatch [:set-input-value path-label e]))
-                              :options options
-                              :onChange (fn [_ e] (when e (dispatch [:set-input-value path-id (.-value e)])))
-                              :isOptionEqualToValue (fn [_ _] true)
-                              :render-input (fn [^js params]
-                                              (set! (.-variant params) variant)
-                                              (set! (.-label params) label)
-                                              (create-element mui/TextField params))}]))))

@@ -23,7 +23,6 @@
  (fn [db _]
    (-> db :forms :recipe)))
 
-;; Used by recipe component 
 (reg-sub
  ::form-recipe-ingredients
  (fn [db _]
@@ -32,4 +31,4 @@
 (reg-sub
  ::ingredients
  (fn [db _]
-   (-> db :ingredients vals vec)))
+   (-> db :ingredients)))

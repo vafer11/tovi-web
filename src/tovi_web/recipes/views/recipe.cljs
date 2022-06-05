@@ -27,7 +27,7 @@
           [:> mui/TableCell (str (:value quantity) " gr")]])]]]))
 
 
-(defn- editable-ingredients-table [read-only?]
+(defn- editable-ingredients-table []
   (let [ingredients @(subscribe [::subs/ingredients])
         recipe-ingredients @(subscribe [::subs/form-recipe-ingredients])]
     [:<>
@@ -61,16 +61,15 @@
                 :onChange #(do
                              (dispatch [:set-input-value percentage-path (.. % -target -value)])
                              (dispatch [:set-input-value quantity-path (-> % .-target .-value utils/get-quantity)]))
-                :InputProps {:readOnly read-only?
-                             :endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
+                :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
              [:> mui/TableCell {:width "30%"}
               [select
                [:forms :recipe :ingredients k :id]
-               {:id "ingredient"
+               [:forms :recipe :ingredients k :label]
+               {:id (str "ingredient" k)
                 :autoWidth true
                 :size :small
-                :label ""
-                :inputProps {:readOnly read-only?}}
+                :label ""}
                ingredients]]
              [:> mui/TableCell {:width "20%"}
               (str (:value quantity) " gr")]
@@ -122,7 +121,7 @@
        [:> mui/Grid {:item true :xs 12}
         (if read-only?
           [read-only-ingredients-table]
-          [editable-ingredients-table read-only?])]
+          [editable-ingredients-table])]
        (when (not read-only?)
          [:> mui/Grid {:item true :xs 12}
           [button title {:style {:margin-top 15}
