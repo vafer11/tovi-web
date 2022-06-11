@@ -8,8 +8,10 @@
  [[reagent "1.1.0"]
   [re-frame "1.2.0"]
   [bidi "2.1.6"]
-  [clj-commons/pushy "0.3.10"]
+  [funcool/struct "1.4.0"]
+  [funcool/cuerdas "2022.03.27-397"]
 
+  [clj-commons/pushy "0.3.10"]
   [binaryage/devtools "1.0.4"]]
 
  :dev-http

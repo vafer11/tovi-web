@@ -1,14 +1,14 @@
 (ns tovi-web.views
-  (:require 
+  (:require
    ["@mui/material/CssBaseline" :default CssBaseline]
    ["@mui/material/styles" :refer [ThemeProvider]]
    [tovi-web.theme :refer [tovi-theme]]
-   [tovi-web.account.views.signup :refer [signup]]
-   [tovi-web.account.views.signin :refer [signin]]
+   [tovi-web.account.signup.views :refer [signup]] 
+   [tovi-web.account.signin.views :refer [signin]]
    [tovi-web.recipes.views.recipes :refer [recipes]]
    [tovi-web.recipes.views.recipe :refer [recipe]]
    [tovi-web.recipes.views.calculate-recipe :refer [calculate-recipe]]
-   [tovi-web.nav.views.nav :refer [nav]]
+   [tovi-web.nav.views :refer [nav2]]
    [tovi-web.nav.events :as events]
    [tovi-web.nav.subs :as subs]
    [re-frame.core :as re-frame]))
@@ -59,5 +59,5 @@
     [:> ThemeProvider {:theme (tovi-theme)}
      [:<>
       [:> CssBaseline]
-      [nav]      
+      [nav2]      
       (panels @active-panel)]]))

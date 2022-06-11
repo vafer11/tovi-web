@@ -10,4 +10,16 @@
       :secondary {:main "#009688"}}
      :typography
      {:useNextVariants true
-      :h5 {:color "#121858"}}})))
+      :h5 {:color "#121858"}}
+     :components
+     {:MuiTextField
+      {:defaultProps
+       {:required true
+        :variant :outlined
+        :margin :normal
+        :fullWidth true}}
+      :MuiButton
+      {:defaultProps
+       {:variant :contained
+        :color :primary
+        :fullWidth true}}}})))

@@ -1,7 +1,6 @@
 (ns tovi-web.components.inputs
   (:require ["@mui/material" :as mui]
             [tovi-web.components.events :as events]
-            [reagent.core :refer [create-element]]
             [re-frame.core :refer [dispatch subscribe]]))
 
 (defn text-field [path input-props]

@@ -12,6 +12,16 @@
    (get-in db (conj path :value))))
 
 (reg-event-db
+ :set-path-value
+ (fn [db [_ path value]]
+   (assoc-in db path value)))
+
+(reg-sub
+ :path-value
+ (fn [db [_ path]]
+   (get-in db path)))
+
+(reg-event-db
  :set-input-error
  (fn [db [_ path value]]
    (assoc-in db (conj path :error) value)))
@@ -25,6 +35,13 @@
  :input-error?
  (fn [[_ path]]
    (subscribe [:input-error path]))
+ (fn [error-msg]
+   (not (nil? error-msg))))
+
+(reg-sub
+ :input-error?2
+ (fn [[_ path]]
+   (subscribe [:path-value path]))
  (fn [error-msg]
    (not (nil? error-msg))))
 

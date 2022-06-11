@@ -10,13 +10,15 @@
 (def default-db
   {:name "re-frame"
    :account {:uid "uid" :name "Agustín Fernández" :email "agufercar@gmail.com"}
-   :forms {:signin {:email {:value "" :error nil}
-                    :password {:value "" :error nil}}
-           :signup {:first-name {:value "" :error nil}
-                    :last-name {:value "" :error nil}
-                    :email {:value "" :error nil}
-                    :password {:value "" :error nil}
-                    :confirm-password {:value "" :error nil}}
+   :forms {:signin {:values {:email ""
+                             :password ""}
+                    :errors {}}
+           :signup {:values {:name ""
+                             :last-name ""
+                             :email ""
+                             :password ""
+                             :confirm-password ""}
+                    :errors {}}
            :recipe {:name {:value "Recipe name" :error nil}
                     :description {:value "Recipe name" :error nil}
                     :image nil
