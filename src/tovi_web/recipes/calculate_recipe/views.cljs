@@ -1,9 +1,9 @@
-(ns tovi-web.recipes.views.calculate-recipe
+(ns tovi-web.recipes.calculate-recipe.views
   (:require ["@mui/material" :as mui]
             ["@mui/icons-material/PictureAsPdf" :default PictureAsPdfIcon]
             [tovi-web.utils :as utils]
-            [tovi-web.recipes.events :as events]
-            [tovi-web.recipes.subs :as subs]
+            [tovi-web.recipes.calculate-recipe.events :as events]
+            [tovi-web.recipes.calculate-recipe.subs :as subs]
             [tovi-web.components.inputs :refer [text-field]]
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :refer [as-element]]))
@@ -14,7 +14,7 @@
      [:> mui/Typography {:component :h2 :variant :h5} "Calculate recipe"]
      [:form {:noValidate true :autoComplete "off"}
       [:> mui/Grid {:container true :spacing 1}
-              
+
        [:> mui/Grid {:item true :xs 5}
         [text-field
          [:forms :recipe :name]
@@ -33,7 +33,7 @@
                          (dispatch [:set-input-value dough-weight-path value])
                          (dispatch [::events/balance-recipe-by-dough-weigth value]))
             :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}])]
-       
+
        [:> mui/Grid {:container true :item true :justifyContent "right" :alignItems "right" :xs 2}
         [:> mui/IconButton {:aria-label "Download PDF"
                             :onClick #(dispatch [::events/download-pdf id])}
@@ -51,8 +51,8 @@
           [:> mui/TableBody
            (for [[k {:keys [percentage label]}] ingredients]
              ^{:key (str k)}
-             [:> mui/TableRow 
-              [:> mui/TableCell {:width "33%"} 
+             [:> mui/TableRow
+              [:> mui/TableCell {:width "33%"}
                (str (:value percentage) " %")]
               [:> mui/TableCell {:width "33%"}
                (:value label)]

@@ -1,13 +1,25 @@
-(ns tovi-web.recipes.views.recipes
+(ns tovi-web.recipes.recipes.views
   (:require ["@mui/material" :as mui]
             ["@mui/icons-material/ModeEdit" :default ModeEditIcon]
             ["@mui/icons-material/Calculate" :default CalculateIcon]
             ["@mui/icons-material/Delete" :default DeleteIcon]
-            [tovi-web.recipes.views.delete-recipe :refer [delete-recipe-dialog]]
-            [tovi-web.recipes.events :as events]
-            [tovi-web.recipes.subs :as subs]
+            [tovi-web.recipes.recipes.events :as events]
+            [tovi-web.recipes.recipes.subs :as subs]
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :refer [as-element]]))
+
+
+(defn- delete-recipe-dialog []
+  (let [show-dialog? @(subscribe [:show-dialog? :delete-recipe])
+        recipe-id @(subscribe [::subs/active-dialog-recipe-id :delete-recipe])]
+    [:> mui/Dialog {:open show-dialog?
+                    :onClose #(dispatch [:hide-dialog])}
+     [:> mui/DialogTitle "Delete recipe"]
+     [:> mui/DialogContent
+      [:> mui/Typography "Are you sure you want to delete this recipe?"]]
+     [:> mui/DialogActions
+      [:> mui/Button {:onClick #(dispatch [:hide-dialog])} "Cancel"]
+      [:> mui/Button {:onClick #(dispatch [::events/delete-recipe recipe-id])} "Delete"]]]))
 
 (defn- recipe-card [{:keys [id name description image steps]}]
   [:> mui/Card {:sx {:maxWidth 405}}
@@ -41,10 +53,9 @@
       [:> mui/Button
        {:style {:margin-top 15}
         :onClick #(dispatch [:navigate :create-recipe])}
-       "Add recipe"]
+       "Add recipe 2"]
       [:> mui/Grid {:container true :spacing 4}
        (for [[k v] @recipes]
          ^{:key (str k "-" v)}
          [:> mui/Grid {:item true :xs 12 :sm 6 :md 4 :xl 3 :align :center}
           [recipe-card v]])]]]))
-

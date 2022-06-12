@@ -1,11 +1,11 @@
-(ns tovi-web.recipes.views.recipe
+(ns tovi-web.recipes.recipe.views
   (:require ["@mui/material" :as mui]
             ["@mui/icons-material/Delete" :default DeleteIcon]
             ["@mui/icons-material/AddBox" :default AddBoxIcon]
             [tovi-web.utils :as utils]
             [tovi-web.components.inputs :refer [text-field select button upload-image]]
-            [tovi-web.recipes.events :as events]
-            [tovi-web.recipes.subs :as subs]
+            [tovi-web.recipes.recipe.events :as events]
+            [tovi-web.recipes.recipe.subs :as subs]
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :refer [as-element]]))
 
@@ -90,26 +90,26 @@
        [:> mui/Grid {:item true :xs 12}
         [text-field
          [:forms :recipe :name]
-         {:id :name 
-          :label "Recipe" 
-          :required true 
+         {:id :name
+          :label "Recipe"
+          :required true
           :InputProps {:readOnly read-only?}}]]
 
        [:> mui/Grid {:item true :xs 12}
         [text-field
          [:forms :recipe :description]
-         {:id :description 
-          :label "Description" 
+         {:id :description
+          :label "Description"
           :required true
           :InputProps {:readOnly read-only?}}]]
 
        [:> mui/Grid {:item true :xs 12}
         [text-field
          [:forms :recipe :steps]
-         {:id :steps 
-          :label "Steps" 
-          :multiline true 
-          :rows 5 
+         {:id :steps
+          :label "Steps"
+          :multiline true
+          :rows 5
           :required true
           :InputProps {:readOnly read-only?}}]]
 
