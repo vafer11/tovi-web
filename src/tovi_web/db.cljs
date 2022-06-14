@@ -1,15 +1,11 @@
 (ns tovi-web.db
   (:require [re-frame.core :refer [reg-event-db]]))
 
-
-; All Inputs values are stored following this structure {:forms :form-name {:input-name1 {:value input-value
-;                                                                                         :error input-error}
-;                                                                           :input-name2 {:value input-value
-;                                                                                         :error input-error}
-;}}
 (def default-db
   {:name "re-frame"
-   :account {:uid "uid" :name "Agustín Fernández" :email "agufercar@gmail.com"}
+   :account {:uid "uid..." 
+             :name "Agustín Fernández" 
+             :email "agufercar@gmail.com"}
    :forms {:signin {:values {:email ""
                              :password ""}
                     :errors {}}
@@ -19,18 +15,18 @@
                              :password ""
                              :confirm-password ""}
                     :errors {}}
-           :recipe {:name {:value "Recipe name" :error nil}
-                    :description {:value "Recipe name" :error nil}
-                    :image nil
-                    :steps {:value "Steps 1 ... Steps 2 ..." :error nil}
-                    :ingredients {1 {:id {:value 1 :error nil}
-                                     :label {:value "Harina"}
-                                     :percentage {:value 100 :error nil}
-                                     :quantity {:value 1000}}
-                                  2 {:id {:value 2 :error nil}
-                                     :label {:value "Agua"}
-                                     :percentage {:value 59 :error nil}
-                                     :quantity {:value 590}}}}}
+           :recipe {:values {:name ""
+                             :image nil
+                             :steps ""
+                             :ingredients {1 {:id 1
+                                              :label "Harina"
+                                              :percentage 100
+                                              :quantity 1000}
+                                           2 {:id 2
+                                              :label "Agua"
+                                              :percentage 59
+                                              :quantity 590}}}
+                    :errors {}}}
    :ingredients {1 {:value 1 :label "Harina"}
                  2 {:value 2 :label "Agua"}
                  3 {:value 3 :label "Sal"}

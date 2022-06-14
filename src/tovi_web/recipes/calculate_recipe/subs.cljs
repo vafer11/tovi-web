@@ -2,6 +2,21 @@
   (:require [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
- ::recipe-form
+ ::recipe-id
  (fn [db _]
-   (-> db :forms :recipe)))
+   (-> db :forms :recipe :values :id)))
+
+(reg-sub
+ ::recipe-ingredients
+ (fn [db _]
+   (-> db :forms :recipe :values :ingredients)))
+
+(reg-sub
+ ::quantity-value
+ (fn [db [_ id]]
+   (get-in db [:forms :recipe :values :ingredients id :quantity])))
+
+(reg-sub
+ ::field-value
+ (fn [db [_ id]]
+   (get-in db [:forms :recipe :values id])))

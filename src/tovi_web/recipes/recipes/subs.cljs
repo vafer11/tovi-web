@@ -6,8 +6,12 @@
  (fn [db]
    (:recipes db)))
 
-; Used by view-recipe, calculate-recipe, and delete-recipe dialog.
 (reg-sub
- ::active-dialog-recipe-id
- (fn [db [_ dialog]]
-   (get-in db [:active-dialog dialog :active-recipe-id])))
+ ::show-delete-dialog?
+ (fn [db [_]]
+   (-> db :active-dialog :delete-recipe boolean)))
+
+(reg-sub
+ ::delete-dialog-recipe-id
+ (fn [db [_]]
+   (-> db :active-dialog :delete-recipe :id)))

@@ -1,25 +1,21 @@
 (ns tovi-web.recipes.recipes.events
-  (:require [re-frame.core :refer [reg-event-fx]]
-            [tovi-web.utils :as utils]))
+  (:require [re-frame.core :refer [reg-event-db reg-event-fx]]))
 
-(defn- ingredients-to-form [ingredients]
-  (reduce-kv
-   (fn [acc k v]
-     (->> (utils/to-form-map v [:id :percentage :label :quantity])
-          (assoc acc k)))
-   ingredients
-   ingredients))
+(reg-event-db
+ ::hide-delete-dialog
+ (fn [db _]
+   (update-in db [:active-dialog] dissoc :delete-recipe)))
 
-(defn- recipe-to-form [{:keys [ingredients] :as recipe}]
-  (let [ingredients (ingredients-to-form ingredients)
-        recipe (utils/to-form-map recipe [:name :description :steps])]
-    (assoc recipe :ingredients ingredients)))
+(reg-event-db
+ ::show-delete-dialog
+ (fn [db [_ id]]
+   (assoc-in db [:active-dialog :delete-recipe :id] id)))
 
 (reg-event-fx
  ::show-recipe
  (fn [{:keys [db]} [_ id mode]]
-   (let [recipe (-> db (get-in [:recipes id]) recipe-to-form)]
-     {:db (assoc-in db [:forms :recipe] recipe)
+   (let [recipe (get-in db [:recipes id])]
+     {:db (assoc-in db [:forms :recipe :values] recipe)
       :fx [(when (= mode :calculate-recipe)
              [:dispatch [:tovi-web.recipes.calculate-recipe.events/calculate-recipe-dough-weight]])
            [:dispatch [:navigate mode]]]})))
@@ -28,4 +24,4 @@
  ::delete-recipe
  (fn [{:keys [db]} [_ id]]
    {:db (update-in db [:recipes] dissoc id)
-    :fx [[:dispatch [:hide-dialog]]]}))
+    :fx [[:dispatch [::hide-delete-dialog]]]}))

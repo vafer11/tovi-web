@@ -3,22 +3,22 @@
             ["@mui/icons-material/ModeEdit" :default ModeEditIcon]
             ["@mui/icons-material/Calculate" :default CalculateIcon]
             ["@mui/icons-material/Delete" :default DeleteIcon]
-            [tovi-web.recipes.recipes.events :as events]
-            [tovi-web.recipes.recipes.subs :as subs]
             [re-frame.core :refer [dispatch subscribe]]
-            [reagent.core :refer [as-element]]))
+            [reagent.core :refer [as-element]]
+            [tovi-web.recipes.recipes.events :as events]
+            [tovi-web.recipes.recipes.subs :as subs]))
 
 
 (defn- delete-recipe-dialog []
-  (let [show-dialog? @(subscribe [:show-dialog? :delete-recipe])
-        recipe-id @(subscribe [::subs/active-dialog-recipe-id :delete-recipe])]
+  (let [show-dialog? @(subscribe [::subs/show-delete-dialog?])
+        recipe-id @(subscribe [::subs/delete-dialog-recipe-id])]
     [:> mui/Dialog {:open show-dialog?
-                    :onClose #(dispatch [:hide-dialog])}
+                    :onClose #(dispatch [::events/hide-delete-dialog])}
      [:> mui/DialogTitle "Delete recipe"]
      [:> mui/DialogContent
       [:> mui/Typography "Are you sure you want to delete this recipe?"]]
      [:> mui/DialogActions
-      [:> mui/Button {:onClick #(dispatch [:hide-dialog])} "Cancel"]
+      [:> mui/Button {:onClick #(dispatch [::events/hide-delete-dialog])} "Cancel"]
       [:> mui/Button {:onClick #(dispatch [::events/delete-recipe recipe-id])} "Delete"]]]))
 
 (defn- recipe-card [{:keys [id name description image steps]}]
@@ -41,7 +41,7 @@
                         :onClick #(dispatch [::events/show-recipe id :calculate-recipe])}
      [:> CalculateIcon]]
     [:> mui/IconButton {:aria-label "Delete recipe"
-                        :onClick #(dispatch [:show-dialog :delete-recipe id])
+                        :onClick #(dispatch [::events/show-delete-dialog id])
                         :style {:marginLeft :auto}}
      [:> DeleteIcon]]]])
 
@@ -52,6 +52,8 @@
      [:> mui/Container {:maxWidth :xl :style {:margin-top 20}}
       [:> mui/Button
        {:style {:margin-top 15}
+        :fullWidth false
+        :margin :normal
         :onClick #(dispatch [:navigate :create-recipe])}
        "Add recipe 2"]
       [:> mui/Grid {:container true :spacing 4}
