@@ -6,8 +6,7 @@
 
 (def routes
   (atom
-    ["/" {"" :home
-          "about" :about
+    ["/" {"" :recipes
           "signup" :signup
           "signin" :signin
           "reset-pw" :reset-pw

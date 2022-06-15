@@ -21,41 +21,43 @@
       [:> mui/Button {:onClick #(dispatch [::events/hide-delete-dialog])} "Cancel"]
       [:> mui/Button {:onClick #(dispatch [::events/delete-recipe recipe-id])} "Delete"]]]))
 
-(defn- recipe-card [{:keys [id name description image steps]}]
-  [:> mui/Card {:sx {:maxWidth 405}}
-   [:> mui/CardHeader {:avatar (as-element [:> mui/Avatar {:sx {:bgcolor "red"}} "AF"])
-                       :title name
-                       :subheader description}]
-   [:> mui/CardMedia {:component :img
-                      :height 195
-                      :image (:src image)
-                      :alt name
-                      :onClick #(dispatch [::events/show-recipe id :view-recipe])}]
-   [:> mui/CardContent
-    [:> mui/Typography {:variant :body2} steps]]
-   [:> mui/CardActions {:disableSpacing true}
-    [:> mui/IconButton {:aria-label "Edit recipe"
-                        :onClick #(dispatch [::events/show-recipe id :edit-recipe])}
-     [:> ModeEditIcon]]
-    [:> mui/IconButton {:aria-label "Calculate recipe"
-                        :onClick #(dispatch [::events/show-recipe id :calculate-recipe])}
-     [:> CalculateIcon]]
-    [:> mui/IconButton {:aria-label "Delete recipe"
-                        :onClick #(dispatch [::events/show-delete-dialog id])
-                        :style {:marginLeft :auto}}
-     [:> DeleteIcon]]]])
+(defn- recipe-card [{:keys [id name image steps]}]
+  (let [src (if (:src image) (:src image) "/images/bread.jpg")]
+    [:> mui/Card {:sx {:maxWidth 405}}
+     [:> mui/CardHeader {:avatar (as-element [:> mui/Avatar {:sx {:bgcolor "red"}} "AF"])
+                         :title name}]
+     [:> mui/CardMedia {:component :img
+                        :height 195
+                        :image src
+                        :alt name
+                        :onClick #(dispatch [::events/show-recipe id :view-recipe])}]
+     [:> mui/CardContent
+      [:> mui/Typography {:variant :body2} steps]]
+     [:> mui/CardActions {:disableSpacing true}
+      [:> mui/IconButton {:aria-label "Edit recipe"
+                          :onClick #(dispatch [::events/show-recipe id :edit-recipe])}
+       [:> ModeEditIcon]]
+      [:> mui/IconButton {:aria-label "Calculate recipe"
+                          :onClick #(dispatch [::events/show-recipe id :calculate-recipe])}
+       [:> CalculateIcon]]
+      [:> mui/IconButton {:aria-label "Delete recipe"
+                          :onClick #(dispatch [::events/show-delete-dialog id])
+                          :style {:marginLeft :auto}}
+       [:> DeleteIcon]]]]
+    ))
 
 (defn recipes []
   (let [recipes (subscribe [::subs/recipes])]
     [:<>
      [delete-recipe-dialog]
-     [:> mui/Container {:maxWidth :xl :style {:margin-top 20}}
+     [:> mui/Container {:maxWidth :xl :style {:margin-top 20
+                                              :margin-bottom 20}}
       [:> mui/Button
        {:style {:margin-top 15}
         :fullWidth false
         :margin :normal
         :onClick #(dispatch [:navigate :create-recipe])}
-       "Add recipe 2"]
+       "Add recipe"]
       [:> mui/Grid {:container true :spacing 4}
        (for [[k v] @recipes]
          ^{:key (str k "-" v)}

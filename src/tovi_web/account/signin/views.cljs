@@ -45,5 +45,7 @@
                                                     [:> VisibilityIcon]]])}
                          :onChange #(onChange :password %1)}]]
      [:> mui/Grid {:item true :xs 12}
-      [:> mui/Button {:onClick #(dispatch [::events/signin])}
+      [:> mui/Button {:variant :contained
+                      :fullWidth true
+                      :onClick #(dispatch [::events/signin])}
        "Submit"]]]]])

@@ -2,8 +2,8 @@
   (:require
    ["@mui/material/CssBaseline" :default CssBaseline]
    ["@mui/material/styles" :refer [ThemeProvider]]
-   [reagent.dom :as rdom]
    [re-frame.core :as re-frame]
+   [reagent.dom :as rdom] 
    [tovi-web.db :as db-events]
    [tovi-web.routes :as routes]
    [tovi-web.config :as config]
@@ -19,33 +19,6 @@
 
 (defmulti panels identity)
 (defmethod panels :default [] [:div "No panel found for this route."])
-
-;; home
-
-(defn home []
-  (let [name "name"]
-    [:div
-     [:h1
-      (str "Hello from... " name ". This is the Home Page.")]
-
-     [:div
-      [:a {:on-click #(re-frame/dispatch [:navigate :about])}
-       "go to About Page"]]]))
-
-(defmethod panels :home [] [home])
-
-;; about
-
-(defn about []
-  [:div
-   [:h1 "This is the About Page."]
-
-   [:div
-    [:a {:on-click #(re-frame/dispatch [:navigate :home])}
-     "go to Home Page"]]])
-
-(defmethod panels :about [] [about])
-
 (defmethod panels :signup [] [signup])
 (defmethod panels :signin [] [signin])
 (defmethod panels :recipes [] [recipes])
@@ -55,7 +28,6 @@
 (defmethod panels :calculate-recipe [] [calculate-recipe])
 
 ;; main
-
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
     [:> ThemeProvider {:theme (tovi-theme)}
@@ -63,6 +35,7 @@
       [:> CssBaseline]
       [nav2]
       (panels @active-panel)]]))
+
 
 
 (defn dev-setup []

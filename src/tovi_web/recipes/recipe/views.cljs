@@ -4,7 +4,6 @@
             ["@mui/icons-material/AddBox" :default AddBoxIcon] 
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :refer [as-element]]
-            [tovi-web.components.inputs :refer [select button upload-image]]
             [tovi-web.recipes.recipe.events :as events]
             [tovi-web.recipes.recipe.subs :as subs]
             [tovi-web.recipes.recipe.db :refer [valid-field?]]
@@ -30,8 +29,14 @@
 
 (defn- on-percentage-change [ingredient-id input]
   (let [value (.. input -target -value)]
-    (dispatch [::events/set-percentage-value ingredient-id value]) 
-    (dispatch [::events/set-quantity-value ingredient-id (-> value utils/get-quantity)])))
+    (dispatch [::events/set-percentage ingredient-id value]) 
+    (dispatch [::events/set-quantity ingredient-id (-> value utils/get-quantity)])))
+
+(defn- on-ingredient-change [id input ingredients]
+  (let [new-id (.. input -target -value)
+        new-label (get-in ingredients [new-id :label])]
+    (dispatch [::events/set-ingredient-id id new-id])
+    (dispatch [::events/set-ingredient-label id new-label])))
 
 (defn- editable-ingredients-table []
   (let [ingredients @(subscribe [::subs/ingredients])
@@ -64,17 +69,26 @@
               :onChange #(on-percentage-change ingredient-id %1)
               :fullWidth false
               :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
+           
            [:> mui/TableCell {:width "30%"}
-            [select
-             [:forms :recipe :values :ingredients ingredient-id :id]
-             [:forms :recipe :values :ingredients ingredient-id :label]
-             {:id (str "ingredient" ingredient-id)
-              :autoWidth true
-              :size :small
-              :label ""}
-             ingredients]]
+            [:> mui/FormControl
+             {:fullWidth true
+              :variant "standard"
+              :error @(subscribe [::subs/ingredient-error?])}
+             [:> mui/Select
+              {:id (str "ingredient" ingredient-id)
+               :value @(subscribe [::subs/ingredient-value ingredient-id])
+               :autoWidth true
+               :size :small
+               :onChange #(on-ingredient-change ingredient-id %1 ingredients)}
+              (for [[_ {:keys [value label]}] ingredients]
+                ^{:key (str "select-" value)}
+                [:> mui/MenuItem {:value value} label])]
+             [:> mui/FormHelperText @(subscribe [::subs/ingredient-error-msg])]]]
+           
            [:> mui/TableCell {:width "20%"}
             (str quantity " gr")]
+           
            [:> mui/TableCell {:width "20%"}
             [:> mui/IconButton
              {:aria-label "Delete recipe ingredient"
@@ -88,6 +102,10 @@
     (dispatch [::events/set-field-value id value])
     (when (valid-field? id {id value})
       (dispatch [::events/dissoc-error id]))))
+
+(defn- on-image-change [input]
+  (let [files (.from js/Array (.. input -target -files))]
+    (dispatch [::events/upload-image files])))
 
 (defn recipe [title mode]
   (let [read-only? (= mode :view)
@@ -116,12 +134,19 @@
           :error @(subscribe [::subs/steps-error?])
           :helperText @(subscribe [::subs/steps-error-msg])
           :onChange #(onChange :steps %1)
-          :InputProps {:readOnly read-only?}}]]
-
+          :InputProps {:readOnly read-only?}}]] 
+       
        [:> mui/Grid {:item true :xs 12}
-        (if read-only?
-          [:img {:src src :width "100%"}]
-          [upload-image [:forms :recipe :values :image]])]
+        [:img {:src src :width "100%"}]
+        (when-not read-only?
+          [:<>
+           [:input {:type :file
+                    :id :select-image
+                    :accept "image/*"
+                    :style {:display :none}
+                    :onChange on-image-change}]
+           [:label {:htmlFor :select-image}
+            [:> mui/Button {:component :span} "Upload Image"]]])]
 
        [:> mui/Grid {:item true :xs 12}
         (if read-only?
@@ -129,7 +154,10 @@
           [editable-ingredients-table])]
        (when (not read-only?)
          [:> mui/Grid {:item true :xs 12}
-          [button title {:style {:margin-top 15}
-                         :onClick #(case mode
-                                     :create (dispatch [::events/create-recipe])
-                                     :edit (dispatch [::events/edit-recipe]))}]])]]]))
+          [:> mui/Button {:style {:margin-top 15}
+                          :variant :contained
+                          :fullWidth true
+                          :onClick #(case mode
+                                      :create (dispatch [::events/create-recipe])
+                                      :edit (dispatch [::events/edit-recipe]))}
+           title]])]]]))

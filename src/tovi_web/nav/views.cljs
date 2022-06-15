@@ -54,7 +54,7 @@
                             :aria-label :menu
                             :onClick #(reset! open? true)}
          [:> MenuIcon]]
-        [:> mui/Typography {:variant :h6} "My Recipes 2"]]
+        [:> mui/Typography {:variant :h6} "My Recipes"]]
        [:div
         [:> mui/Drawer {:anchor "left"
                         ;:PaperProps {:sx {:backgroundColor "#2c387e":color "white"}}
@@ -74,7 +74,7 @@
 (defn public []
   [:> mui/AppBar {:position :static}
    [:> mui/Toolbar
-    [:> mui/Typography {:variant :h6 :className "nav-title-class"} "My Recipes 2"]]])
+    [:> mui/Typography {:variant :h6 :className "nav-title-class"} "My Recipes"]]])
 
 (defn nav2 []
   (let [logged-in @(subscribe [::subs/logged-in?])]

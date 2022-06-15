@@ -2,19 +2,38 @@
   (:require [re-frame.core :refer [reg-event-db reg-event-fx]]))
 
 (reg-event-db
- ::set-percentage-value
+ ::set-percentage
  (fn [db [_ id input]]
    (assoc-in db [:forms :recipe :values :ingredients id :percentage] input)))
 
 (reg-event-db
- ::set-quantity-value
+ ::set-quantity
  (fn [db [_ id input]]
    (assoc-in db [:forms :recipe :values :ingredients id :quantity] input)))
+
+(reg-event-db
+ ::set-ingredient-id
+ (fn [db [_ id input]]
+   (assoc-in db [:forms :recipe :values :ingredients id :id] input)))
+
+(reg-event-db
+ ::set-ingredient-label
+ (fn [db [_ id input]]
+   (assoc-in db [:forms :recipe :values :ingredients id :label] input)))
 
 (reg-event-db
  ::set-field-value
  (fn [db [_ field input]]
    (assoc-in db [:forms :recipe :values field] input)))
+
+(reg-event-db
+ ::upload-image
+ (fn [db [_ files]]
+   (if-let [file (first files)]
+     (assoc-in db [:forms :recipe :values :image] {:name (.-name file)
+                                                   :attachment file
+                                                   :src (.createObjectURL js/URL file)})
+     db)))
 
 (reg-event-db
  ::dissoc-error

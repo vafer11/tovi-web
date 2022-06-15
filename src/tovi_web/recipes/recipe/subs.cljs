@@ -7,6 +7,11 @@
    (get-in db [:forms :recipe :values :ingredients id :percentage])))
 
 (reg-sub
+ ::ingredient-value
+ (fn [db [_ id]]
+   (get-in db [:forms :recipe :values :ingredients id :id])))
+
+(reg-sub
  ::field-value
  (fn [db [_ id]]
    (get-in db [:forms :recipe :values id])))
@@ -32,6 +37,18 @@
  :<- [::steps-error-msg]
  (fn [[error] _]
    (boolean error)))
+
+(reg-sub
+ ::ingredient-error-msg
+ (fn [db [_ id]]
+   (get-in db [:forms :recipe :errors :ingredients id])))
+
+(reg-sub
+ ::ingredient-error?
+ :<- [::ingredient-error-msg]
+ (fn [[error] _]
+   (boolean error)))
+
 
 
 (reg-sub

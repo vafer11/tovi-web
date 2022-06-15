@@ -20,6 +20,7 @@
         :fullWidth true}}
       :MuiButton
       {:defaultProps
-       {:variant :contained
-        :color :primary
-        :fullWidth true}}}})))
+       {:color :primary
+        ;:variant :contained
+        ;:fullWidth true
+        }}}})))

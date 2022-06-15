@@ -55,5 +55,7 @@
                          :helperText @(subscribe [::subs/confirm-password-error-msg])
                          :onChange #(onChange :confirm-password %1)}]]
      [:> mui/Grid {:item true :xs 12 :sx {:mb 4}}
-      [:> mui/Button {:onClick #(dispatch [::events/signup])}
+      [:> mui/Button {:variant :contained
+                      :fullWidth true
+                      :onClick #(dispatch [::events/signup])}
        "Submit"]]]]])

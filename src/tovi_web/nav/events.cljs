@@ -19,13 +19,3 @@
  :set-active-panel
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
-
-(reg-event-db
- :show-dialog
- (fn [db [_ dialog id]]
-   (assoc-in db [:active-dialog dialog] {:active-recipe-id id})))
-
-(reg-event-db
- :hide-dialog
- (fn [db]
-   (dissoc db :active-dialog)))
