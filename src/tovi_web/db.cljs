@@ -34,7 +34,7 @@
                                               :label "Levadura"
                                               :percentage 1
                                               :quantity 10}}}
-                    :errors {}}}
+                    :errors {:ingredients {}}}}
    :ingredients {1 {:value 1 :label "Harina"}
                  2 {:value 2 :label "Agua"}
                  3 {:value 3 :label "Sal"}

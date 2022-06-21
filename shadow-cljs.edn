@@ -11,6 +11,8 @@
   [funcool/struct "1.4.0"]
   [funcool/cuerdas "2022.03.27-397"]
 
+  [metosin/malli "0.8.4"]
+
   [clj-commons/pushy "0.3.10"]
   [binaryage/devtools "1.0.4"]]
 

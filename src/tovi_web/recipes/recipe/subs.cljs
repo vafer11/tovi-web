@@ -1,5 +1,5 @@
 (ns tovi-web.recipes.recipe.subs
-  (:require [re-frame.core :refer [reg-sub]]))
+  (:require [re-frame.core :refer [reg-sub subscribe]]))
 
 (reg-sub
  ::percentage-value
@@ -39,17 +39,16 @@
    (boolean error)))
 
 (reg-sub
- ::ingredient-error-msg
+ ::ingredient-percentage-error-msg
  (fn [db [_ id]]
-   (get-in db [:forms :recipe :errors :ingredients id])))
+   (get-in db [:forms :recipe :errors :ingredients id :percentage])))
 
 (reg-sub
- ::ingredient-error?
- :<- [::ingredient-error-msg]
- (fn [[error] _]
-   (boolean error)))
-
-
+ ::ingredient-percentage-error?
+ (fn [[_ id]]
+   (subscribe [::ingredient-percentage-error-msg id]))
+ (fn [[error-msg] _]
+   (boolean error-msg)))
 
 (reg-sub
  ::image-src

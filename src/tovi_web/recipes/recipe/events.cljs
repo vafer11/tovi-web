@@ -1,5 +1,6 @@
 (ns tovi-web.recipes.recipe.events
-  (:require [re-frame.core :refer [reg-event-db reg-event-fx]]))
+  (:require [re-frame.core :refer [reg-event-db reg-event-fx]]
+            [tovi-web.recipes.recipe.db :refer [valid-form? validate-form]]))
 
 (reg-event-db
  ::set-percentage
@@ -57,15 +58,21 @@
 (reg-event-fx
  ::create-recipe
  (fn [{:keys [db]} _]
-   (let [recipe (-> db :forms :recipe :values)
+   (let [form (-> db :forms :recipe :values)
          next-key (->> db :recipes keys (reduce max 0) inc)]
-     {:db (assoc-in db [:recipes next-key] (assoc recipe :id next-key))
-      :fx [[:dispatch [:navigate :recipes]]]})))
+     (if (valid-form? form) 
+       {:db (assoc-in db [:recipes next-key] (assoc form :id next-key))
+        :fx [[:dispatch [:navigate :recipes]]]}
+       (let [errors (validate-form form)]
+         {:db (assoc-in db [:forms :recipe :errors] errors)})))))
 
 (reg-event-fx
  ::edit-recipe
  (fn [{:keys [db]} _]
-   (let [recipe (-> db :forms :recipe :values)
-         recipe-key (:id recipe)]
-     {:db (assoc-in db [:recipes recipe-key] recipe)
-      :fx [[:dispatch [:navigate :recipes]]]})))
+   (let [form (-> db :forms :recipe :values)
+         recipe-key (:id form)]
+     (if (valid-form? form)
+       {:db (assoc-in db [:recipes recipe-key] form)
+        :fx [[:dispatch [:navigate :recipes]]]}
+       (let [errors (validate-form form)]
+         {:db (assoc-in db [:forms :recipe :errors] errors)})))))

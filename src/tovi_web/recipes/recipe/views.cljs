@@ -38,6 +38,19 @@
     (dispatch [::events/set-ingredient-id id new-id])
     (dispatch [::events/set-ingredient-label id new-label])))
 
+(defn- percentage-field [ingredient-id]
+  [:> mui/TextField
+   {:id :percentage
+    :variant :standard
+    :margin :none
+    :size :small
+    :value @(subscribe [::subs/percentage-value ingredient-id])
+    :error @(subscribe [::subs/ingredient-percentage-error? ingredient-id])
+    :helperText @(subscribe [::subs/ingredient-percentage-error-msg ingredient-id])
+    :onChange #(on-percentage-change ingredient-id %1)
+    :fullWidth false
+    :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}])
+
 (defn- editable-ingredients-table []
   (let [ingredients @(subscribe [::subs/ingredients])
         recipe-ingredients @(subscribe [::subs/recipe-ingredients])]
@@ -60,21 +73,12 @@
           ^{:key (str ingredient-id)}
           [:> mui/TableRow {:key (str ingredient-id)}
            [:> mui/TableCell {:width "30%"}
-            [:> mui/TextField
-             {:id :percentage
-              :variant :standard
-              :margin :none
-              :size :small
-              :value @(subscribe [::subs/percentage-value ingredient-id])
-              :onChange #(on-percentage-change ingredient-id %1)
-              :fullWidth false
-              :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]]
+            [percentage-field ingredient-id]] 
            
            [:> mui/TableCell {:width "30%"}
             [:> mui/FormControl
              {:fullWidth true
-              :variant "standard"
-              :error @(subscribe [::subs/ingredient-error?])}
+              :variant "standard"}
              [:> mui/Select
               {:id (str "ingredient" ingredient-id)
                :value @(subscribe [::subs/ingredient-value ingredient-id])
@@ -83,8 +87,7 @@
                :onChange #(on-ingredient-change ingredient-id %1 ingredients)}
               (for [[_ {:keys [value label]}] ingredients]
                 ^{:key (str "select-" value)}
-                [:> mui/MenuItem {:value value} label])]
-             [:> mui/FormHelperText @(subscribe [::subs/ingredient-error-msg])]]]
+                [:> mui/MenuItem {:value value} label])]]]
            
            [:> mui/TableCell {:width "20%"}
             (str quantity " gr")]
