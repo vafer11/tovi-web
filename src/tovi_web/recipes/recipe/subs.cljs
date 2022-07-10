@@ -19,7 +19,7 @@
 (reg-sub
  ::name-error-msg
  (fn [db _]
-   (get-in db [:forms :recipe :errors :name])))
+   (get-in db [:forms :recipe :errors :name 0])))
 
 (reg-sub
  ::name-error?
@@ -30,7 +30,7 @@
 (reg-sub
  ::steps-error-msg
  (fn [db _]
-   (get-in db [:forms :recipe :errors :steps])))
+   (get-in db [:forms :recipe :errors :steps 0])))
 
 (reg-sub
  ::steps-error?
@@ -41,7 +41,7 @@
 (reg-sub
  ::ingredient-percentage-error-msg
  (fn [db [_ id]]
-   (get-in db [:forms :recipe :errors :ingredients id :percentage])))
+   (get-in db [:forms :recipe :errors :ingredients id :percentage 0])))
 
 (reg-sub
  ::ingredient-percentage-error?

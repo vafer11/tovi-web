@@ -9,7 +9,7 @@
 (reg-sub
  ::name-error-msg
  (fn [db _]
-   (get-in db [:forms :signup :errors :name])))
+   (get-in db [:forms :signup :errors :name 0])))
 
 (reg-sub
  ::name-error?
@@ -20,7 +20,7 @@
 (reg-sub
  ::last-name-error-msg
  (fn [db _]
-   (get-in db [:forms :signup :errors :last-name])))
+   (get-in db [:forms :signup :errors :last-name 0])))
 
 (reg-sub
  ::last-name-error?
@@ -31,7 +31,7 @@
 (reg-sub
  ::email-error-msg
  (fn [db _]
-   (get-in db [:forms :signup :errors :email])))
+   (get-in db [:forms :signup :errors :email 0])))
 
 (reg-sub
  ::email-error?
@@ -42,7 +42,7 @@
 (reg-sub
  ::password-error-msg
  (fn [db _]
-   (get-in db [:forms :signup :errors :password])))
+   (get-in db [:forms :signup :errors :password 0])))
 
 (reg-sub
  ::password-error?
@@ -52,7 +52,7 @@
 (reg-sub
  ::confirm-password-error-msg
  (fn [db _]
-   (get-in db [:forms :signup :errors :confirm-password])))
+   (get-in db [:forms :signup :errors :confirm-password 0])))
 
 (reg-sub
  ::confirm-password-error?

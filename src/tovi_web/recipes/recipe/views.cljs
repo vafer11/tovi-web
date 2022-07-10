@@ -6,7 +6,7 @@
             [reagent.core :refer [as-element]]
             [tovi-web.recipes.recipe.events :as events]
             [tovi-web.recipes.recipe.subs :as subs]
-            [tovi-web.recipes.recipe.db :refer [valid-field?]]
+            [tovi-web.recipes.recipe.db :refer [valid-input?]]
             [tovi-web.utils :as utils]))
 
 (defn- read-only-ingredients-table []
@@ -26,30 +26,20 @@
           [:> mui/TableCell (str label)]
           [:> mui/TableCell (str quantity " gr")]])]]]))
 
-
-(defn- on-percentage-change [ingredient-id input]
+(defn- on-percentage-change [id input]
   (let [value (.. input -target -value)]
-    (dispatch [::events/set-percentage ingredient-id value]) 
-    (dispatch [::events/set-quantity ingredient-id (-> value utils/get-quantity)])))
+    (dispatch [::events/set-percentage id value]) 
+    (dispatch [::events/set-quantity id (-> value utils/get-quantity)])
+    (when (valid-input? :percentage value)
+      (dispatch [::events/dissoc-ingredient-error id :percentage]))))
 
 (defn- on-ingredient-change [id input ingredients]
   (let [new-id (.. input -target -value)
         new-label (get-in ingredients [new-id :label])]
     (dispatch [::events/set-ingredient-id id new-id])
-    (dispatch [::events/set-ingredient-label id new-label])))
-
-(defn- percentage-field [ingredient-id]
-  [:> mui/TextField
-   {:id :percentage
-    :variant :standard
-    :margin :none
-    :size :small
-    :value @(subscribe [::subs/percentage-value ingredient-id])
-    :error @(subscribe [::subs/ingredient-percentage-error? ingredient-id])
-    :helperText @(subscribe [::subs/ingredient-percentage-error-msg ingredient-id])
-    :onChange #(on-percentage-change ingredient-id %1)
-    :fullWidth false
-    :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}])
+    (dispatch [::events/set-ingredient-label id new-label])
+    (when (valid-input? :id new-id)
+      (dispatch [::events/dissoc-ingredient-error id :id]))))
 
 (defn- editable-ingredients-table []
   (let [ingredients @(subscribe [::subs/ingredients])
@@ -72,8 +62,18 @@
         (for [[ingredient-id {:keys [quantity]}] recipe-ingredients]
           ^{:key (str ingredient-id)}
           [:> mui/TableRow {:key (str ingredient-id)}
-           [:> mui/TableCell {:width "30%"}
-            [percentage-field ingredient-id]] 
+           [:> mui/TableCell {:width "30%"} 
+            [:> mui/TextField
+             {:id :percentage
+              :variant :standard
+              :margin :none
+              :size :small
+              :value @(subscribe [::subs/percentage-value ingredient-id])
+              :error @(subscribe [::subs/ingredient-percentage-error? ingredient-id])
+              :helperText @(subscribe [::subs/ingredient-percentage-error-msg ingredient-id])
+              :onChange #(on-percentage-change ingredient-id %1)
+              :fullWidth false
+              :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]] 
            
            [:> mui/TableCell {:width "30%"}
             [:> mui/FormControl
@@ -97,13 +97,12 @@
              {:aria-label "Delete recipe ingredient"
               :onClick #(dispatch [::events/remove-ingredient-from-recipe ingredient-id])
               :style {:marginLeft :auto}}
-             [:> DeleteIcon]]]]
-          )]]]]))
+             [:> DeleteIcon]]]])]]]]))
 
 (defn onChange [id input]
   (let [value (.. input -target -value)]
     (dispatch [::events/set-field-value id value])
-    (when (valid-field? id {id value})
+    (when (valid-input? id value)
       (dispatch [::events/dissoc-error id]))))
 
 (defn- on-image-change [input]
@@ -154,7 +153,7 @@
        [:> mui/Grid {:item true :xs 12}
         (if read-only?
           [read-only-ingredients-table]
-          [editable-ingredients-table])]
+          (editable-ingredients-table))]
        (when (not read-only?)
          [:> mui/Grid {:item true :xs 12}
           [:> mui/Button {:style {:margin-top 15}

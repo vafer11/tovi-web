@@ -3,13 +3,13 @@
    ["@mui/material" :as mui]
    [tovi-web.account.signup.events :as events]
    [tovi-web.account.signup.subs :as subs]
-   [tovi-web.account.signup.db :refer [valid-field?]]
+   [tovi-web.account.signup.db :refer [valid-input?]]
    [re-frame.core :refer [subscribe dispatch]]))
 
 (defn onChange [id input]
   (let [value (.. input -target -value)]
     (dispatch [::events/set-field-value id value])
-    (when (valid-field? id {id value})
+    (when (valid-input? id value)
       (dispatch [::events/dissoc-error id]))))
 
 (defn signup []

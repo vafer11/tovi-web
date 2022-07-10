@@ -1,23 +1,22 @@
 (ns tovi-web.account.signin.db
-  (:require [struct.core :as st]))
+  (:require [malli.core :as m]
+            [tovi-web.utils :as utils]))
 
-(def email 
-  {:email
-   [[st/required :message "Can´t be blank"]
-    [st/email :message "Invalid email"]]})
+(def email-schema [:re {:error/message "Invalid email"} utils/email-regex])
+(def password-schema (utils/text-field 6 16))
 
-(def password
-  {:password
-   [[st/required :message "Can´t be blank"]
-    [st/min-count 6 :message "Must contain at leat six character"]]})
+(def signin-schema
+  [:map
+   [:email email-schema]
+   [:password password-schema]])
 
-(def signin-scheme
-  (merge email password))
+(defn valid-form? [form]
+  (m/validate signin-schema form))
 
-(defn validate-form [values] (st/validate values signin-scheme))
-(defn valid-form? [values] (st/valid? values signin-scheme))
+(defn validate-form [form]
+  (utils/validate-schema signin-schema form))
 
-(defn valid-field? [id input]
-  (case id
-    :email (st/valid? input email)
-    :password (st/valid? input password)))
+(defn valid-input? [field-name input]
+  (case field-name
+    :email (m/validate email-schema input)
+    :password (m/validate password-schema input)))

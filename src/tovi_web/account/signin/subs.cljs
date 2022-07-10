@@ -9,7 +9,7 @@
 (reg-sub
  ::email-error-msg
  (fn [db _]
-   (get-in db [:forms :signin :errors :email])))
+   (get-in db [:forms :signin :errors :email 0])))
 
 (reg-sub
  ::email-error?
@@ -20,7 +20,7 @@
 (reg-sub
  ::password-error-msg
  (fn [db _]
-   (get-in db [:forms :signin :errors :password])))
+   (get-in db [:forms :signin :errors :password 0])))
 
 (reg-sub
  ::password-error?

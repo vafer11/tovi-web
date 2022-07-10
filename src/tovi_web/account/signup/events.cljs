@@ -1,5 +1,6 @@
 (ns tovi-web.account.signup.events
   (:require [re-frame.core :refer [reg-event-db]]
+            [tovi-web.utils :refer [remove-blank]]
             [tovi-web.account.signup.db :refer [valid-form? validate-form]]))
 
 (reg-event-db
@@ -18,5 +19,5 @@
    (let [form (get-in db [:forms :signup :values])]
      (if (valid-form? form)
        db
-       (let [errors (-> form validate-form first)]
+       (let [errors (validate-form form)]
          (assoc-in db [:forms :signup :errors] errors))))))

@@ -1,49 +1,37 @@
 (ns tovi-web.recipes.recipe.db
-  (:require [struct.core :as st]
-            [malli.core :as m]
-            [malli.error :as me]))
+  (:require [malli.core :as m]
+            [tovi-web.utils :as utils]))
 
-(def recipe-name
-  {:name
-   [[st/required :message "Can´t be blank"]
-    [st/string :message "Must be string"]]})
+(def name-schema (utils/text-field 2 10))
+(def steps-schema (utils/text-field 2 900))
 
-(def steps
-  {:steps
-   [[st/required :message "Can´t be blank"]
-    [st/string :message "Must be string"]]})
+(def percentage-schema
+  [:fn {:error/fn (fn [{:keys [value]} _]
+                    (when-not (and (> value 0) (<= value 100)) 
+                      "Must be between 0 and 100"))}
+   (fn [x] (and (> x 0) (<= x 100)))])
 
-(def percentage
-  {:percentage
-   [[st/required :message "Can´t be blank"]
-    [st/number-str :message "Must be a valid number"]]})
+(def id-schema :int)
 
-(def recipe-scheme (merge recipe-name steps))
-
-
-(defn- validate-ingredients [{:keys [ingredients]}]
-  (reduce
-   (fn [acc [id input]]
-     (when-not (st/valid? input percentage)
-       (let [error-msg (-> input (st/validate percentage) first)]
-         (assoc acc id error-msg))))
-   {}
-   (seq ingredients)))
-
-(defn- valid-ingredients? [{:keys [ingredients]}]
-  (not (some #(not (st/valid? %1 percentage)) (vals ingredients))))
-
-(defn validate-form [form]
-  (merge
-   (first (st/validate form recipe-scheme))
-   {:ingredients (validate-ingredients form)}))
+(def recipe-schema
+  [:map
+   [:name name-schema]
+   [:steps steps-schema]
+   [:ingredients
+    [:map-of :int [:map
+                   [:id id-schema]
+                   [:label :string]
+                   [:percentage percentage-schema] 
+                   [:quantity :int]]]]])
 
 (defn valid-form? [form]
-  (and
-   (st/valid? form recipe-scheme)
-   (valid-ingredients? form)))
+  (m/validate recipe-schema form))
 
-(defn valid-field? [id input]
-  (case id
-    :name (st/valid? input recipe-name)
-    :steps (st/valid? input steps)))
+(defn valid-input? [field-name input]
+  (case field-name
+    :name (m/validate name-schema input)
+    :steps (m/validate steps-schema input)
+    :percentage (m/validate percentage-schema input)))
+
+(defn validate-form [form]
+  (utils/validate-schema recipe-schema form))

@@ -1,7 +1,7 @@
 (ns tovi-web.account.signin.views
   (:require ["@mui/material" :as mui]
             ["@mui/icons-material/Visibility" :default VisibilityIcon]
-            [tovi-web.account.signin.db :refer [valid-field?]]
+            [tovi-web.account.signin.db :refer [valid-input?]]
             [tovi-web.account.signin.events :as events]
             [tovi-web.account.signin.subs :as subs]
             [re-frame.core :refer [dispatch subscribe]]
@@ -10,7 +10,7 @@
 (defn onChange [id input]
   (let [value (.. input -target -value)]
     (dispatch [::events/set-field-value id value])
-    (when (valid-field? id {id value})
+    (when (valid-input? id value)
       (dispatch [::events/dissoc-error id]))))
 
 (defn change-pw-type [_]

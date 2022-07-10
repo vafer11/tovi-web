@@ -42,6 +42,12 @@
    (update-in db [:forms :recipe :errors] dissoc field)))
 
 (reg-event-db
+ ::dissoc-ingredient-error
+ (fn [db [_ ingredient-id field]]
+   (.log js/console (str ingredient-id))
+   (update-in db [:forms :recipe :errors :ingredients ingredient-id] dissoc field)))
+
+(reg-event-db
  ::remove-ingredient-from-recipe
  (fn [db [_ id]]
    (update-in db [:forms :recipe :values :ingredients] dissoc id)))
@@ -51,8 +57,8 @@
  (fn [db _]
    (let [ingredients (get-in db [:forms :recipe :values :ingredients])
          next-id (->> ingredients keys (reduce max 0) inc)]
-     (assoc-in db [:forms :recipe :values :ingredients next-id] {:id next-id
-                                                                 :label ""
+     (assoc-in db [:forms :recipe :values :ingredients next-id] {:id 1
+                                                                 :label "Harina"
                                                                  :percentage 0
                                                                  :quantity ""}))))
 (reg-event-fx

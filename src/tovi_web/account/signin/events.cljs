@@ -18,5 +18,5 @@
    (let [form (get-in db [:forms :signin :values])]
      (if (valid-form? form)
        db
-       (let [errors (-> form validate-form first)]
+       (let [errors (validate-form form)]
          (assoc-in db [:forms :signin :errors] errors))))))
