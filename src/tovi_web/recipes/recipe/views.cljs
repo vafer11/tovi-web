@@ -38,8 +38,9 @@
         new-label (get-in ingredients [new-id :label])]
     (dispatch [::events/set-ingredient-id id new-id])
     (dispatch [::events/set-ingredient-label id new-label])
-    (when (valid-input? :id new-id)
-      (dispatch [::events/dissoc-ingredient-error id :id]))))
+    ;; Need to be done
+    ;; (when (valid-input? :id new-id) (dispatch [::events/dissoc-ingredient-error id :id]))
+    ))
 
 (defn- editable-ingredients-table []
   (let [ingredients @(subscribe [::subs/ingredients])
