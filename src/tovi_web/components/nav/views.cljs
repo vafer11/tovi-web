@@ -1,14 +1,13 @@
-(ns tovi-web.nav.views
-  (:require
-   ["@mui/material" :as mui]
-   ["@mui/icons-material/Menu" :default MenuIcon]
-   ["@mui/icons-material/BakeryDining" :default BakeryDiningIcon]
-   ["@mui/icons-material/Logout" :default LogoutIcon]
-   ["@mui/icons-material/SupervisorAccount" :default SupervisorAccountIcon]
-   ["@mui/icons-material/ListAlt" :default ListAltIcon] 
-   [reagent.core :as r]
-   [re-frame.core :refer [dispatch subscribe]]
-   [tovi-web.account.signin.subs :as subs]))
+(ns tovi-web.components.nav.views
+  (:require ["@mui/material" :as mui]
+            ["@mui/icons-material/Menu" :default MenuIcon]
+            ["@mui/icons-material/BakeryDining" :default BakeryDiningIcon]
+            ["@mui/icons-material/Logout" :default LogoutIcon]
+            ["@mui/icons-material/SupervisorAccount" :default SupervisorAccountIcon]
+            ["@mui/icons-material/ListAlt" :default ListAltIcon]
+            [reagent.core :as r]
+            [re-frame.core :refer [dispatch subscribe]]
+            [tovi-web.account.signin.subs :as subs]))
 
 (defn menu [open?]
   [:> mui/Box {:role :presentation
@@ -42,9 +41,9 @@
       [:> mui/ListItemText {:primary "Sign Out"}]]]]])
 
 
-(defn authenticated2 []
+(defn authenticated []
   (let [open? (r/atom false)
-        {name :name email :email} @(subscribe [::subs/user-information])
+        account (subscribe [::subs/user-information])
         avatar-src "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"]
     (fn []
       [:> mui/AppBar {:position :static}
@@ -64,10 +63,10 @@
           [:> mui/Avatar {:alt "Profile image"
                           :src avatar-src
                           ;:sx {:width 24 :height 24}
-                          }"AF"]
+                          }]
           [:> mui/Box {:sx {:ml 2}}
-           [:> mui/Typography {:variant :subtitle1} name]
-           [:> mui/Typography {:variant :caption} email]]]
+           [:> mui/Typography {:variant :subtitle1} (str (:name @account) " " (:last_name @account))]
+           [:> mui/Typography {:variant :caption} (:email @account)]]]
          [:> mui/Divider]
          [menu open?]]]])))
 
@@ -76,8 +75,8 @@
    [:> mui/Toolbar
     [:> mui/Typography {:variant :h6 :className "nav-title-class"} "My Recipes"]]])
 
-(defn nav2 []
+(defn nav []
   (let [logged-in @(subscribe [::subs/logged-in?])]
     (if logged-in
-      [authenticated2]
+      [authenticated]
       [public])))

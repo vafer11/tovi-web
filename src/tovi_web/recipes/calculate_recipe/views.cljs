@@ -7,10 +7,10 @@
             [tovi-web.recipes.calculate-recipe.subs :as subs]
             [tovi-web.utils :as utils]))
 
-(defn- quantity-onChange [recipe-id ingredient-id input]
+(defn- quantity-onChange [recipe-id ri_id input]
   (let [value (-> input .-target .-value utils/to-int)]
-    (dispatch [::events/set-quantity-value ingredient-id value])
-    (dispatch [::events/balance-recipe recipe-id ingredient-id value])
+    (dispatch [::events/set-quantity-value ri_id value])
+    (dispatch [::events/balance-recipe recipe-id ri_id value])
     (dispatch [::events/calculate-recipe-dough-weight])))
 
 (defn- dough-weight-onChange [input]
@@ -55,20 +55,20 @@
             [:> mui/TableCell "Ingredients"]
             [:> mui/TableCell "Quantity"]]]
           [:> mui/TableBody
-           (for [[ingredient-id {:keys [percentage label]}] ingredients]
-             ^{:key (str ingredient-id)}
+           (for [[ri_id {:keys [percentage name]}] ingredients]
+             ^{:key (str ri_id)}
              [:> mui/TableRow
               [:> mui/TableCell {:width "33%"}
                (str percentage " %")]
               [:> mui/TableCell {:width "33%"}
-               label]
+               name]
               [:> mui/TableCell {:width "33%"}
                [:> mui/TextField 
                 {:id :quantity
                  :variant :standard
                  :margin :none
                  :size :small
-                 :value @(subscribe [::subs/quantity-value ingredient-id])
-                 :onChange #(quantity-onChange recipe-id ingredient-id %)
+                 :value @(subscribe [::subs/quantity-value ri_id])
+                 :onChange #(quantity-onChange recipe-id ri_id %)
                  :fullWidth false
                  :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "gr"])}}]]])]]]]]]]))

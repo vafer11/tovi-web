@@ -8,7 +8,6 @@
             [tovi-web.recipes.recipes.events :as events]
             [tovi-web.recipes.recipes.subs :as subs]))
 
-
 (defn- delete-recipe-dialog []
   (let [show-dialog? @(subscribe [::subs/show-delete-dialog?])
         recipe-id @(subscribe [::subs/delete-dialog-recipe-id])]
@@ -43,8 +42,7 @@
       [:> mui/IconButton {:aria-label "Delete recipe"
                           :onClick #(dispatch [::events/show-delete-dialog id])
                           :style {:marginLeft :auto}}
-       [:> DeleteIcon]]]]
-    ))
+       [:> DeleteIcon]]]]))
 
 (defn recipes []
   (let [recipes (subscribe [::subs/recipes])]

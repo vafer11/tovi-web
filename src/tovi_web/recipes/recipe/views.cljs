@@ -19,25 +19,25 @@
         [:> mui/TableCell "Ingredients"]
         [:> mui/TableCell "Quantity"]]]
       [:> mui/TableBody
-       (for [[k {:keys [percentage label quantity]}] recipe-ingredients]
+       (for [[k {:keys [percentage name quantity]}] recipe-ingredients]
          ^{:key (str k)}
          [:> mui/TableRow {:key (str k)}
           [:> mui/TableCell (str percentage " %")]
-          [:> mui/TableCell (str label)]
+          [:> mui/TableCell (str name)]
           [:> mui/TableCell (str quantity " gr")]])]]]))
 
 (defn- on-percentage-change [id input]
-  (let [value (.. input -target -value)]
+  (let [value (utils/to-float (.. input -target -value))]
     (dispatch [::events/set-percentage id value]) 
     (dispatch [::events/set-quantity id (-> value utils/get-quantity)])
     (when (valid-input? :percentage value)
       (dispatch [::events/dissoc-ingredient-error id :percentage]))))
 
-(defn- on-ingredient-change [id input ingredients]
-  (let [new-id (.. input -target -value)
-        new-label (get-in ingredients [new-id :label])]
-    (dispatch [::events/set-ingredient-id id new-id])
-    (dispatch [::events/set-ingredient-label id new-label])
+(defn- on-ingredient-change [ri_id input ingredients]
+  (let [new-id (.. input -target -value) 
+        new-label (get-in ingredients [new-id :name])]
+    (dispatch [::events/set-ingredient-id ri_id new-id])
+    (dispatch [::events/set-ingredient-label ri_id new-label])
     ;; Need to be done
     ;; (when (valid-input? :id new-id) (dispatch [::events/dissoc-ingredient-error id :id]))
     ))
@@ -60,19 +60,19 @@
          [:> mui/TableCell "Quantity"]
          [:> mui/TableCell "Actions"]]]
        [:> mui/TableBody
-        (for [[ingredient-id {:keys [quantity]}] recipe-ingredients]
-          ^{:key (str ingredient-id)}
-          [:> mui/TableRow {:key (str ingredient-id)}
+        (for [[ri_id {:keys [i_id quantity]}] recipe-ingredients]
+          ^{:key (str ri_id)}
+          [:> mui/TableRow {:key (str ri_id)}
            [:> mui/TableCell {:width "30%"} 
             [:> mui/TextField
              {:id :percentage
               :variant :standard
               :margin :none
               :size :small
-              :value @(subscribe [::subs/percentage-value ingredient-id])
-              :error @(subscribe [::subs/ingredient-percentage-error? ingredient-id])
-              :helperText @(subscribe [::subs/ingredient-percentage-error-msg ingredient-id])
-              :onChange #(on-percentage-change ingredient-id %1)
+              :value @(subscribe [::subs/percentage-value ri_id])
+              :error @(subscribe [::subs/ingredient-percentage-error? ri_id])
+              :helperText @(subscribe [::subs/ingredient-percentage-error-msg ri_id])
+              :onChange #(on-percentage-change ri_id %1)
               :fullWidth false
               :InputProps {:endAdornment (as-element [:> mui/InputAdornment {:position "start"} "%"])}}]] 
            
@@ -81,14 +81,14 @@
              {:fullWidth true
               :variant "standard"}
              [:> mui/Select
-              {:id (str "ingredient" ingredient-id)
-               :value @(subscribe [::subs/ingredient-value ingredient-id])
+              {:id (str "ingredient" i_id)
+               :value @(subscribe [::subs/ingredient-value ri_id])
                :autoWidth true
                :size :small
-               :onChange #(on-ingredient-change ingredient-id %1 ingredients)}
-              (for [[_ {:keys [value label]}] ingredients]
-                ^{:key (str "select-" value)}
-                [:> mui/MenuItem {:value value} label])]]]
+               :onChange #(on-ingredient-change ri_id %1 ingredients)}
+              (for [[_ {:keys [id name]}] ingredients]
+                ^{:key (str "select-" id)}
+                [:> mui/MenuItem {:value id} name])]]]
            
            [:> mui/TableCell {:width "20%"}
             (str quantity " gr")]
@@ -96,7 +96,7 @@
            [:> mui/TableCell {:width "20%"}
             [:> mui/IconButton
              {:aria-label "Delete recipe ingredient"
-              :onClick #(dispatch [::events/remove-ingredient-from-recipe ingredient-id])
+              :onClick #(dispatch [::events/remove-ingredient-from-recipe ri_id])
               :style {:marginLeft :auto}}
              [:> DeleteIcon]]]])]]]]))
 

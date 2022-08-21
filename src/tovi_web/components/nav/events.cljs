@@ -1,7 +1,7 @@
-(ns tovi-web.nav.events
+(ns tovi-web.components.nav.events
   (:require
    [tovi-web.routes :as routes]
-   [re-frame.core :refer [reg-event-fx reg-fx reg-event-db]]))
+   [re-frame.core :refer [reg-event-fx reg-fx reg-event-db reg-sub]]))
 
 ;; :navigate effect handler
 (reg-fx
@@ -19,3 +19,8 @@
  :set-active-panel
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
+
+(reg-sub
+ :active-panel
+ (fn [db _]
+   (:active-panel db)))

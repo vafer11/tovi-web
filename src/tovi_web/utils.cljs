@@ -12,17 +12,6 @@
                       (> (count value) max) (str "Should contain less than " max " characters")))}
    (fn [x] (and (string? x) (>= (count x) min)  (<= (count x) max)))])
 
-(defn to-int [v]
-  (let [v (js/parseInt v)]
-    (if (js/isNaN v) 0 v)))
-
-(defn rule-of-three [a b c] 
-  (/ (* c a) b))
-
-(defn get-quantity [percentage]
-  (let [percentage (/ percentage 100)]
-    (* 1000 percentage)))
-
 (defn- remove-blank
   "Dissoc from map keywords which value is a blank string"
   [data]
@@ -40,3 +29,35 @@
                            {:error/fn
                             (fn [_ _]
                               (str "This field is required"))}))})))
+
+(defn to-int [v]
+  (let [v (js/parseInt v)]
+    (if (js/isNaN v) 0 v)))
+
+(defn to-float [v]
+  (let [v (js/parseFloat v)]
+    (if (js/isNaN v) 0.0 v)))
+
+(defn rule-of-three [a b c] 
+  (/ (* c a) b))
+
+(defn get-quantity [percentage]
+  (let [percentage (/ percentage 100)]
+    (* 1000 percentage)))
+
+
+;; Convert:
+;; from this [{:ri_id 95, :recipe_id 69, :name leche, :quantity 500, :percentage 0.00M}]
+;; to this {95 {:ri_id 95, :recipe_id 69, :name leche, :quantity 500, :percentage 0.00M} ...}
+(defn convert-to-map [input key]
+  (reduce
+   (fn [acc value]
+     (let [key-value (key value)]
+       (assoc acc key-value value)))
+   {} input))
+
+
+(defn show-msg [db severity msg]
+  (assoc db :snackbar {:severity severity
+                       :msg msg
+                       :open? true}))

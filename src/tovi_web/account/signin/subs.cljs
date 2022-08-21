@@ -9,7 +9,7 @@
 (reg-sub
  ::email-error-msg
  (fn [db _]
-   (get-in db [:forms :signin :errors :email 0])))
+   (get-in db [:forms :signin :errors :email])))
 
 (reg-sub
  ::email-error?
@@ -20,7 +20,7 @@
 (reg-sub
  ::password-error-msg
  (fn [db _]
-   (get-in db [:forms :signin :errors :password 0])))
+   (get-in db [:forms :signin :errors :password])))
 
 (reg-sub
  ::password-error?
@@ -29,14 +29,23 @@
 
 (reg-sub
  ::uid
- (fn [db _] (get-in db [:account :uid])))
+ (fn [db _] (get-in db [:account :id])))
 
 (reg-sub
  ::user-information
  (fn [db _] (get-in db [:account])))
 
-
 (reg-sub
  ::logged-in?
  :<- [::uid]
- (fn [uid] (boolean uid)))
+ (fn [id] (boolean id)))
+
+(reg-sub
+ ::submit-btn-status
+ (fn [db _]
+   (get-in db [:forms :signin :submit-btn :disabled])))
+
+(reg-sub
+ ::submit-btn-text
+ (fn [db _]
+   (get-in db [:forms :signin :submit-btn :text])))

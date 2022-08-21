@@ -14,9 +14,9 @@
 
 (reg-event-db
  ::balance-recipe
- (fn [db [_ recipe-id ingredient-id new-value]]
-   (let [quantity (get-in db [:recipes recipe-id :ingredients ingredient-id :quantity])
-         ingredients-id-to-update (remove #{ingredient-id}
+ (fn [db [_ recipe-id ri_id new-value]]
+   (let [quantity (get-in db [:recipes recipe-id :ingredients ri_id :quantity])
+         ingredients-id-to-update (remove #{ri_id}
                                           (-> db (get-in [:forms :recipe :values :ingredients]) keys))
          factor (/ new-value quantity)
          reduce-fn (fn [acc id]
@@ -40,7 +40,7 @@
      (assoc-in db [:forms :recipe :values :dough-weight] dough-weight))))
 
 (defn total-recipe-percentage [ingredients]
-  (reduce-kv
+    (reduce-kv
    (fn [acc _ {:keys [percentage]}]
      (+ acc percentage))
    0
@@ -49,12 +49,12 @@
 (reg-event-db
  ::balance-recipe-by-dough-weigth
  (fn [db [_ total-weigth]]
-   (let [ingredients (get-in db [:forms :recipe :values :ingredients])
-         total-percentage (total-recipe-percentage ingredients)
+   (let [recipe-ingredients (get-in db [:forms :recipe :values :ingredients])
+         total-percentage (total-recipe-percentage recipe-ingredients)
          reduce-fn (fn [acc k {:keys [percentage]}]
                      (update-in
                       acc
                       [:forms :recipe :values :ingredients k :quantity]
                       #(-> (utils/rule-of-three total-weigth total-percentage percentage)
-                           utils/to-int)))]
-     (reduce-kv reduce-fn db ingredients))))
+                           utils/to-int)))] 
+     (reduce-kv reduce-fn db recipe-ingredients))))

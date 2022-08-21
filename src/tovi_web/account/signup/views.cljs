@@ -25,12 +25,12 @@
                          :helperText @(subscribe [::subs/name-error-msg])
                          :onChange #(onChange :name %1)}]]
      [:> mui/Grid {:item true :xs 12}
-      [:> mui/TextField {:id :last-name
+      [:> mui/TextField {:id :last_name
                          :label "Last Name"
-                         :value @(subscribe [::subs/field-value :last-name])
+                         :value @(subscribe [::subs/field-value :last_name])
                          :error @(subscribe [::subs/last-name-error?])
                          :helperText @(subscribe [::subs/last-name-error-msg])
-                         :onChange #(onChange :last-name %1)}]]
+                         :onChange #(onChange :last_name %1)}]]
      [:> mui/Grid {:item true :xs 12}
       [:> mui/TextField {:id :email
                          :label "Email"
@@ -47,15 +47,16 @@
                          :helperText @(subscribe [::subs/password-error-msg])
                          :onChange #(onChange :password %1)}]]
      [:> mui/Grid {:item true :xs 12}
-      [:> mui/TextField {:id :confirm-password
+      [:> mui/TextField {:id :confirm_pw
                          :label "Confirm passwotd"
                          :type :password
-                         :value @(subscribe [::subs/field-value :confirm-password])
-                         :error @(subscribe [::subs/confirm-password-error?])
-                         :helperText @(subscribe [::subs/confirm-password-error-msg])
-                         :onChange #(onChange :confirm-password %1)}]]
+                         :value @(subscribe [::subs/field-value :confirm_pw])
+                         :error @(subscribe [::subs/confirm-pw-error?])
+                         :helperText @(subscribe [::subs/confirm-pw-error-msg])
+                         :onChange #(onChange :confirm_pw %1)}]]
      [:> mui/Grid {:item true :xs 12 :sx {:mb 4}}
       [:> mui/Button {:variant :contained
                       :fullWidth true
+                      :disabled @(subscribe [::subs/submit-btn-status])
                       :onClick #(dispatch [::events/signup])}
-       "Submit"]]]]])
+       @(subscribe [::subs/submit-btn-text])]]]]])

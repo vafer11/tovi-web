@@ -2,7 +2,7 @@
   (:require [malli.core :as m]
             [tovi-web.utils :as utils]))
 
-(def name-schema (utils/text-field 2 10))
+(def name-schema (utils/text-field 2 25))
 (def steps-schema (utils/text-field 2 900))
 
 (def percentage-schema
@@ -11,18 +11,18 @@
                       "Must be between 0 and 100"))}
    (fn [x] (and (> x 0) (<= x 100)))])
 
-(def id-schema :int)
-
 (def recipe-schema
   [:map
+   [:id :int]
    [:name name-schema]
    [:steps steps-schema]
    [:ingredients
-    [:map-of :int [:map
-                   [:id id-schema]
-                   [:label :string]
-                   [:percentage percentage-schema] 
-                   [:quantity :int]]]]])
+    [:map-of 
+     :int [:map
+           [:i_id :int]
+           [:name :string]
+           [:percentage percentage-schema]
+           [:quantity :int]]]]])
 
 (defn valid-form? [form]
   (m/validate recipe-schema form))

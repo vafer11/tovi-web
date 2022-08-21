@@ -47,5 +47,6 @@
      [:> mui/Grid {:item true :xs 12}
       [:> mui/Button {:variant :contained
                       :fullWidth true
+                      :disabled @(subscribe [::subs/submit-btn-status])
                       :onClick #(dispatch [::events/signin])}
-       "Submit"]]]]])
+       @(subscribe [::subs/submit-btn-text])]]]]])

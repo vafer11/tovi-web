@@ -15,12 +15,12 @@
 (reg-event-db
  ::set-ingredient-id
  (fn [db [_ id input]]
-   (assoc-in db [:forms :recipe :values :ingredients id :id] input)))
+   (assoc-in db [:forms :recipe :values :ingredients id :i_id] input)))
 
 (reg-event-db
  ::set-ingredient-label
  (fn [db [_ id input]]
-   (assoc-in db [:forms :recipe :values :ingredients id :label] input)))
+   (assoc-in db [:forms :recipe :values :ingredients id :name] input)))
 
 (reg-event-db
  ::set-field-value
@@ -43,9 +43,8 @@
 
 (reg-event-db
  ::dissoc-ingredient-error
- (fn [db [_ ingredient-id field]]
-   (.log js/console (str ingredient-id))
-   (update-in db [:forms :recipe :errors :ingredients ingredient-id] dissoc field)))
+ (fn [db [_ ri_id field]]
+   (update-in db [:forms :recipe :errors :ingredients ri_id] dissoc field)))
 
 (reg-event-db
  ::remove-ingredient-from-recipe
@@ -55,12 +54,14 @@
 (reg-event-db
  ::add-ingredient-to-recipe
  (fn [db _]
-   (let [ingredients (get-in db [:forms :recipe :values :ingredients])
-         next-id (->> ingredients keys (reduce max 0) inc)]
-     (assoc-in db [:forms :recipe :values :ingredients next-id] {:id 1
-                                                                 :label "Harina"
+   (let [recipe-ingredients (get-in db [:forms :recipe :values :ingredients])
+         {id :id name :name} (-> db :ingredients vals first)
+         next-id (->> recipe-ingredients keys (reduce max 0) inc)]
+     (assoc-in db [:forms :recipe :values :ingredients next-id] {:i_id id
+                                                                 :name name
                                                                  :percentage 0
-                                                                 :quantity ""}))))
+                                                                 :quantity 0
+                                                                 :operation "insert"}))))
 (reg-event-fx
  ::create-recipe
  (fn [{:keys [db]} _]
@@ -76,9 +77,9 @@
  ::edit-recipe
  (fn [{:keys [db]} _]
    (let [form (-> db :forms :recipe :values)
-         recipe-key (:id form)]
+         id (:id form)]
      (if (valid-form? form)
-       {:db (assoc-in db [:recipes recipe-key] form)
+       {:db (assoc-in db [:recipes id] form)
         :fx [[:dispatch [:navigate :recipes]]]}
        (let [errors (validate-form form)]
          {:db (assoc-in db [:forms :recipe :errors] errors)})))))

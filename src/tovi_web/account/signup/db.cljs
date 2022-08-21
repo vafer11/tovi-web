@@ -10,12 +10,12 @@
   [:and
    [:map
     [:name name-schema]
-    [:last-name name-schema]
+    [:last_name name-schema]
     [:email email-schema]
     [:password password-schema]
-    [:confirm-password password-schema]]
-   [:fn {:error/message "Password don't match" :error/path [:confirm-password]}
-    (fn [{:keys [password confirm-password]}] (= password confirm-password))]])
+    [:confirm_pw password-schema]]
+   [:fn {:error/message "Password don't match" :error/path [:confirm_pw]}
+    (fn [{:keys [password confirm_pw]}] (= password confirm_pw))]])
 
 (defn valid-form? [form]
   (m/validate signup-schema form))
@@ -26,7 +26,7 @@
 (defn valid-input? [field-name input]
   (case field-name
     :name (m/validate name-schema input)
-    :last-name (m/validate name-schema input)
+    :last_name (m/validate name-schema input)
     :email (m/validate email-schema input)
     :password (m/validate password-schema input)
-    :confirm-password (m/validate password-schema input)))
+    :confirm_pw (m/validate password-schema input)))
