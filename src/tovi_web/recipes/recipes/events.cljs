@@ -22,10 +22,29 @@
              [:dispatch [:tovi-web.recipes.calculate-recipe.events/calculate-recipe-dough-weight]])
            [:dispatch [:navigate mode]]]})))
 
+(reg-event-db
+ ::success-delete-recipe
+ (fn [db [_ _]] 
+   (show-msg db "success" "Recipes successfully deleted")))
+
+(reg-event-db
+ ::failure-delete-recipe
+ (fn [db [_ result]]
+   (.log js/console (str result))
+   (show-msg db "error" "Recipes could not be deleted")))
+
+
 (reg-event-fx
  ::delete-recipe
  (fn [{:keys [db]} [_ id]]
    {:db (update-in db [:recipes] dissoc id)
+    :http-xhrio {:method          :delete
+                 :uri             (str "http://localhost:3000/api/v1/recipes/" id)
+                 :headers         {:authorization (-> db :account :token)}
+                 :format          (json-request-format)
+                 :response-format (json-response-format {:keywords? true})
+                 :on-success      [::success-delete-recipe]
+                 :on-failure      [::failure-delete-recipe]}
     :fx [[:dispatch [::hide-delete-dialog]]]}))
 
 (reg-event-db

@@ -13,13 +13,12 @@
 
 (def recipe-schema
   [:map
-   [:id :int]
    [:name name-schema]
    [:steps steps-schema]
    [:ingredients
     [:map-of 
      :int [:map
-           [:i_id :int]
+           [:ingredient_id :int]
            [:name :string]
            [:percentage percentage-schema]
            [:quantity :int]]]]])

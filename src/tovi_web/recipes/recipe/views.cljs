@@ -60,7 +60,7 @@
          [:> mui/TableCell "Quantity"]
          [:> mui/TableCell "Actions"]]]
        [:> mui/TableBody
-        (for [[ri_id {:keys [i_id quantity]}] recipe-ingredients]
+        (for [[ri_id {:keys [ingredient_id quantity]}] recipe-ingredients]
           ^{:key (str ri_id)}
           [:> mui/TableRow {:key (str ri_id)}
            [:> mui/TableCell {:width "30%"} 
@@ -81,7 +81,7 @@
              {:fullWidth true
               :variant "standard"}
              [:> mui/Select
-              {:id (str "ingredient" i_id)
+              {:id (str "ingredient" ingredient_id)
                :value @(subscribe [::subs/ingredient-value ri_id])
                :autoWidth true
                :size :small

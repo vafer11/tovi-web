@@ -9,7 +9,7 @@
 (reg-sub
  ::ingredient-value
  (fn [db [_ id]]
-   (get-in db [:forms :recipe :values :ingredients id :i_id])))
+   (get-in db [:forms :recipe :values :ingredients id :ingredient_id])))
 
 (reg-sub
  ::field-value
